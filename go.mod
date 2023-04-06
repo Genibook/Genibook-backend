@@ -1,11 +1,15 @@
-module github.com/EDED2314/Go_webscrapper
+module webscrapper
 
 go 1.20
 
-require github.com/gocolly/colly v1.2.0
+require (
+	github.com/PuerkitoBio/goquery v1.8.1
+	github.com/gocolly/colly v1.2.0
+)
+
+require github.com/joho/godotenv v1.5.1
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/antchfx/htmlquery v1.3.0 // indirect
 	github.com/antchfx/xmlquery v1.3.15 // indirect
