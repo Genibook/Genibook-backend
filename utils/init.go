@@ -23,13 +23,14 @@ func Init_colly() (*colly.Collector, error) {
 
 	c.OnRequest(func(r *colly.Request) {
 		// Print the URL of the page being visited
-		fmt.Println("------------")
+		fmt.Println("~~~~~~~~~~")
 		fmt.Println("Visiting:", r.URL.String())
+		fmt.Println("~~~~~~~~~~")
 	})
 
 	c.OnHTML("title", func(e *colly.HTMLElement) {
 		title := e.Text
-
+		fmt.Println("------------")
 		fmt.Print("We are scrapping the website with title: ")
 		fmt.Println(title)
 		fmt.Println("------------")

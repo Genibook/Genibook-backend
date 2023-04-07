@@ -1,6 +1,7 @@
 package constants
 
 var ConstantLinks = map[string]map[string]string{
+	"base":     {"url": "https://parents.mtsd.k12.nj.us"},
 	"endpoint": {"url": "https://parents.mtsd.k12.nj.us/genesis/parents?"},
 	"home":     {"url": "https://parents.mtsd.k12.nj.us/genesis/sis/view?gohome=true"},
 	"profile": {
