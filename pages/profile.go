@@ -14,27 +14,7 @@ import (
 	"github.com/gocolly/colly"
 )
 
-// return Student(
-//
-//		age: json['age'],
-//		imageUrl: json['img_url'],
-//		stateId: json['state_id'],
-//		birthday: json['birthday'],
-//		scheduleLink: json['schedule_link'],
-//		name: json['name'],
-//		grade: json['grade'],
-//		locker: json['locker'],
-//		counselorName: json['counselor_name'],
-//		id: json['id'],
-//		image64: json['image64'],
-//		assignments: json['assignments'] != null
-//			? Assignments.fromJson(json['assignments'])
-//			: Assignments.fromJson({}),
-//		grades: json['grades'] != null
-//			? Grades.fromJson(json['grades'])
-//			: Grades.fromJson({}),
-//	  );
-func ProfileData(c *colly.Collector, user int) {
+func ProfileData(c *colly.Collector, user int) models.Student {
 	exists_an_image := false
 	profile_for_user_css_selector := fmt.Sprintf("table.notecard:nth-child(%d)", user)
 
@@ -130,13 +110,13 @@ func ProfileData(c *colly.Collector, user int) {
 	})
 	// deteaches this thing, can be used later in functions maybe!
 
-	str, err := utils.FormatUrl("profile")
+	profile_url, err := utils.FormatUrl("profile")
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
+		return student
 	}
-	c.Visit(str)
-	c.OnHTMLDetach("table.notecard")
+	c.Visit(profile_url)
+	c.OnHTMLDetach(profile_for_user_css_selector)
 
 	c.OnResponse(func(r *colly.Response) {
 		test := r.Body
@@ -153,4 +133,5 @@ func ProfileData(c *colly.Collector, user int) {
 	// fmt.Println(student.ID)
 	// fmt.Println(student.Grade)
 	// fmt.Println(student.StateID)
+	return student
 }

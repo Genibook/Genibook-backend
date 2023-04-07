@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"log"
 	"net/url"
 	"webscrapper/constants"
 )
@@ -11,7 +11,7 @@ func FormatUrl(key string) (string, error) {
 	endpoint := constants.ConstantLinks["endpoint"]["url"]
 	urlObj, err := url.Parse(endpoint)
 	if err != nil {
-		fmt.Println("Error parsing URL:", err)
+		log.Fatal("Error parsing URL:", err)
 		return "", err
 	}
 
