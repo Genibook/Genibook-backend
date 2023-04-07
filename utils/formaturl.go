@@ -24,3 +24,22 @@ func FormatUrl(key string) (string, error) {
 	formattedURL := urlObj.String() + postDataStr
 	return formattedURL, nil
 }
+
+func FormatDynamicUrl(data map[string]string) (string, error) {
+
+	endpoint := constants.ConstantLinks["endpoint"]["url"]
+	urlObj, err := url.Parse(endpoint)
+	if err != nil {
+		log.Fatal("Error parsing URL:", err)
+		return "", err
+	}
+
+	// Encode the POST data as a URL-encoded string
+	postData := url.Values{}
+	for key, val := range data {
+		postData.Set(key, val)
+	}
+	postDataStr := postData.Encode()
+	formattedURL := urlObj.String() + postDataStr
+	return formattedURL, nil
+}
