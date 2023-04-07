@@ -34,8 +34,9 @@ import (
 //			? Grades.fromJson(json['grades'])
 //			: Grades.fromJson({}),
 //	  );
-func ProfileData(c *colly.Collector) {
+func ProfileData(c *colly.Collector, user int) {
 	exists_an_image := false
+	profile_for_user_css_selector := fmt.Sprintf("table.notecard:nth-child(%d)", user)
 
 	student := models.Student{
 		Age:           0,
@@ -51,12 +52,12 @@ func ProfileData(c *colly.Collector) {
 		Image64:       "N/A",
 	}
 
-	c.OnHTML("table.notecard", func(e *colly.HTMLElement) {
+	c.OnHTML(profile_for_user_css_selector, func(e *colly.HTMLElement) {
 		// table := e.DOM.Find("tbody:nth-child(1) > table:nth-child(1)")
 		table := e.DOM.Find("tbody table > tbody")
 
 		schedule_td := table.Find("tr[valign=\"top\"] > td[valign=\"top\"]:nth-child(2)")
-		student_demo_and_whereabouts := table.Find("tr[valign=\"top\"] > td[valign=\"top\"]:nth-child(1)")
+		student_demo_and_whereabouts := table.Find("tr[valign=\"top\"] > td[valign=\"top\"]:nth-child(1) > table.list > tbody")
 
 		//right - student stuff
 		src, exists_img_url := student_demo_and_whereabouts.Find("img").Attr("src")
@@ -64,6 +65,21 @@ func ProfileData(c *colly.Collector) {
 			student.ImgURL = constants.ConstantLinks["base"]["url"] + src
 			exists_an_image = true
 		}
+
+		trs := student_demo_and_whereabouts.Find("tr.listroweven")
+		trs.Each(func(i int, tr *goquery.Selection) {
+			if i == 2 {
+				student.CounselorName = strings.Replace(strings.ReplaceAll(strings.ReplaceAll(tr.Find("span[style=\"font-weight: 600;\"]").Text(), "\n", ""), " ", ""), ",", ", ", 1)
+			} else if i == trs.Length()-3 {
+				age := tr.Find("td:nth-child(2)").Text()
+				fmt.Println(age)
+			} else if i == trs.Length()-2 {
+
+			} else if i == trs.Length()-1 {
+				locker := tr.Find("td:nth-child(2)").Text()
+				fmt.Println(locker)
+			}
+		})
 
 		//left - schedule stuff
 		top_half := schedule_td.Find("table.list > tbody > tr")
@@ -79,7 +95,6 @@ func ProfileData(c *colly.Collector) {
 					log.Fatal("profile.go - grade for some reason did not convert to int")
 				}
 				student.Grade = grade_int
-
 			} else if i == 1 {
 				spans := tr.Find("td > span")
 				spans.Each(func(i int, s *goquery.Selection) {
@@ -131,8 +146,8 @@ func ProfileData(c *colly.Collector) {
 
 	// fmt.Println(student.ScheduleLink)
 	// fmt.Println(student.ImgURL)
-	//fmt.Println(student.Image64)
+	// fmt.Println(student.Image64)
 	// fmt.Println(student.ID)
-	//fmt.Println(student.Grade)
+	// fmt.Println(student.Grade)
 	// fmt.Println(student.StateID)
 }

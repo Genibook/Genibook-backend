@@ -14,6 +14,6 @@ func main() {
 		log.Fatal(e)
 		return
 	}
-	pages.ProfileData(c)
+	pages.ProfileData(c, 1)
 
 }
