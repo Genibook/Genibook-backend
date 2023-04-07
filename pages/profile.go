@@ -71,13 +71,16 @@ func ProfileData(c *colly.Collector, user int) {
 			if i == 2 {
 				student.CounselorName = strings.Replace(strings.ReplaceAll(strings.ReplaceAll(tr.Find("span[style=\"font-weight: 600;\"]").Text(), "\n", ""), " ", ""), ",", ", ", 1)
 			} else if i == trs.Length()-3 {
-				age := tr.Find("td:nth-child(2)").Text()
-				fmt.Println(age)
+				age, err := strconv.Atoi(tr.Find("td:nth-child(2)").Text())
+				if err != nil {
+					age = 0
+					log.Fatal("profile.go - age of student did not convert to int")
+				}
+				student.Age = age
 			} else if i == trs.Length()-2 {
-
+				student.Birthday = tr.Find("td:nth-child(2)").Text()
 			} else if i == trs.Length()-1 {
-				locker := tr.Find("td:nth-child(2)").Text()
-				fmt.Println(locker)
+				student.Locker = tr.Find("td:nth-child(2)").Text()
 			}
 		})
 
@@ -92,7 +95,7 @@ func ProfileData(c *colly.Collector, user int) {
 
 				grade_int, err := strconv.Atoi(tr.Find("td > span[style=\"font-size: 2em;\"]").Text())
 				if err != nil {
-					log.Fatal("profile.go - grade for some reason did not convert to int")
+					log.Fatal("profile.go - grade did not convert to int")
 				}
 				student.Grade = grade_int
 			} else if i == 1 {
@@ -102,7 +105,7 @@ func ProfileData(c *colly.Collector, user int) {
 						student_id_int, err := strconv.Atoi(s.Text())
 						if err != nil {
 							student_id_int = 0
-							log.Fatal("profile.go - student id for some reason did not convert to int")
+							log.Fatal("profile.go - student id did not convert to int")
 						}
 						student.ID = student_id_int
 
@@ -110,7 +113,7 @@ func ProfileData(c *colly.Collector, user int) {
 						state_ID, err := strconv.Atoi(s.Text())
 						if err != nil {
 							state_ID = 0
-							log.Fatal("profile.go - student id for some reason did not convert to int")
+							log.Fatal("profile.go - state id did not convert to int")
 						}
 						student.StateID = state_ID
 					}
