@@ -17,6 +17,7 @@ func Login(c *colly.Collector, username string, password string) {
 	err := c.Post(constants.ConstantLinks["login"]["url"], data)
 	if err != nil {
 		log.Fatal(err)
+		log.Fatal("Failed login")
 	}
 	fmt.Print("successful login!\n")
 
