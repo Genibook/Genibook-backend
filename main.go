@@ -16,5 +16,6 @@ func main() {
 	// student := pages.ProfileData(c, 1)
 	// fmt.Printf("student: %v\n", student)
 	pages.ProfileData(c, 1)
+	pages.GradebookData(c, 107604, "MP1")
 
 }
