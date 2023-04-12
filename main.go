@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"webscrapper/pages"
 	"webscrapper/utils"
@@ -14,7 +13,8 @@ func main() {
 		log.Fatal(e)
 		return
 	}
-	student := pages.ProfileData(c, 1)
-	fmt.Printf("student: %v\n", student)
+	// student := pages.ProfileData(c, 1)
+	// fmt.Printf("student: %v\n", student)
+	pages.ProfileData(c, 1)
 
 }

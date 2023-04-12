@@ -2,7 +2,6 @@ package pages
 
 import (
 	"encoding/base64"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -33,7 +32,7 @@ func ProfileData(c *colly.Collector, user int) models.Student {
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		notecards := h.DOM.Find("table.notecard")
-		fmt.Println(notecards.Length())
+		//fmt.Println(notecards.Length())
 		notecards.Each(func(i int, notecard *goquery.Selection) {
 			if i == user-1 {
 				table := notecard.Find("tbody table > tbody")

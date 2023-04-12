@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/gocolly/colly"
@@ -15,7 +16,7 @@ func Init_colly() (*colly.Collector, error) {
 
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		log.Fatal("Error loading .env file")
 		return c, err
 	}
 
