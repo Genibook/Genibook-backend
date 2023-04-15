@@ -22,6 +22,16 @@ var ConstantLinks = map[string]map[string]string{
 		"action":    "form",
 		"mpToView":  "",
 	},
+	"assignments": {
+		"tab1":          "studentdata",
+		"tab2":          "gradebook",
+		"tab3":          "coursesummary",
+		"studentid":     "",
+		"action":        "form",
+		"mpToView":      "",
+		"courseCode":    "",
+		"courseSection": "",
+	},
 }
 
 // In Go, you can create a dictionary (also called a map) using the built-in make function. Here's an example:
