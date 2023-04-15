@@ -62,7 +62,8 @@ func BasicDataExtractor(row *goquery.Selection, courseName string) map[string]st
 }
 
 func ProcessGradeCell(s *goquery.Selection) {
-
+	//TODO finish later
+	panic(1)
 }
 
 func ProcessDueCell(s *goquery.Selection) (dayname string, date string) {
