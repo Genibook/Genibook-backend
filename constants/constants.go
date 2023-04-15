@@ -37,6 +37,13 @@ var ConstantLinks = map[string]map[string]string{
 var CourseSummaryAssignmentNameIndex = 4
 var CourseSummaryRowLength = 9
 var CourseSummaryCategoryIndex = 3
+var CourseSummaryMPIndex = 0
+var CourseSummaryDueIndex = 1
+var CourseSummaryTeacherIndex = 2
+var CourseSummaryGradeIndex = 5
+var CourseSummaryCommentIndex = 6
+var CourseSummaryPrevIndex = 7
+var CourseSummaryDocsIndex = 8
 
 var CourseSummaryNameAssignment = "assignment"
 var CourseSummaryNameDescription = "description"

@@ -57,7 +57,9 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 
 				tds := row.Children()
 				tds.Each(func(i int, s *goquery.Selection) {
-					// if i ==
+					if i == constants.CourseSummaryMPIndex {
+
+					}
 				})
 
 				assignments = append(assignments, aAssignment)
