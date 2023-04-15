@@ -34,6 +34,14 @@ var ConstantLinks = map[string]map[string]string{
 	},
 }
 
+var CourseSummaryAssignmentNameIndex = 4
+var CourseSummaryRowLength = 9
+var CourseSummaryCategoryIndex = 3
+
+var CourseSummaryNameAssignment = "assignment"
+var CourseSummaryNameDescription = "description"
+var CourseSummaryNameCategory = "category"
+
 // In Go, you can create a dictionary (also called a map) using the built-in make function. Here's an example:
 
 // go
