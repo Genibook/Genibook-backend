@@ -3,6 +3,7 @@ package pages
 import (
 	"log"
 	"strconv"
+	"strings"
 	"webscrapper/constants"
 	"webscrapper/models"
 	"webscrapper/utils"
@@ -48,6 +49,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 					Prev:         "",
 					Docs:         "",
 				}
+				tds := row.Children()
 
 				stuff := utils.BasicDataExtractor(row, courseName)
 				aAssignment.Category = stuff[constants.CourseSummaryNameCategory]
@@ -55,10 +57,22 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 				aAssignment.Description = stuff[constants.CourseSummaryNameDescription]
 				aAssignment.CourseName = courseName
 
-				tds := row.Children()
 				tds.Each(func(i int, s *goquery.Selection) {
 					if i == constants.CourseSummaryMPIndex {
-
+						aAssignment.MP = strings.TrimSpace(s.Text())
+					} else if i == constants.CourseSummaryDueIndex {
+						dayname, date := utils.ProcessDueCell(s)
+						aAssignment.DayName = strings.TrimSpace(dayname)
+						aAssignment.FullDayName = utils.DayClassifier(aAssignment.DayName)
+						aAssignment.Date = strings.TrimSpace(date)
+					} else if i == constants.CourseSummaryGradeIndex {
+						utils.ProcessGradeCell(s)
+					} else if i == constants.CourseSummaryCommentIndex {
+						aAssignment.Comment = strings.TrimSpace(s.Text())
+					} else if i == constants.CourseSummaryPrevIndex {
+						aAssignment.Prev = strings.TrimSpace(s.Text())
+					} else if i == constants.CourseSummaryDocsIndex {
+						aAssignment.Docs = strings.TrimSpace(s.Text())
 					}
 				})
 

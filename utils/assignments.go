@@ -61,6 +61,25 @@ func BasicDataExtractor(row *goquery.Selection, courseName string) map[string]st
 	return data
 }
 
+func ProcessGradeCell(s *goquery.Selection) {
+
+}
+
+func ProcessDueCell(s *goquery.Selection) (dayname string, date string) {
+	dayname = ""
+	date = ""
+
+	s.Find("div").Each(func(k int, l *goquery.Selection) {
+		if k == 0 {
+			dayname = l.Text()
+
+		} else if k == 1 {
+			date = l.Text()
+		}
+	})
+	return dayname, date
+}
+
 // data = {
 // 	"course_name": course_namee,
 // 	"date": date,
