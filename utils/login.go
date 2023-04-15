@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"webscrapper/constants"
 
@@ -16,9 +15,10 @@ func Login(c *colly.Collector, username string, password string) {
 	}
 	err := c.Post(constants.ConstantLinks["login"]["url"], data)
 	if err != nil {
-		log.Fatal(err)
-		log.Fatal("Failed login")
+		log.Println(err)
+		log.Println("Failed login")
+		// maybe an api call to login or smth and then deal with it like that return the error etc
 	}
-	fmt.Print("successful login!\n")
+	log.Println("successful login!")
 
 }

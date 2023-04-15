@@ -11,7 +11,7 @@ func FormatUrl(key string) (string, error) {
 	endpoint := constants.ConstantLinks["endpoint"]["url"]
 	urlObj, err := url.Parse(endpoint)
 	if err != nil {
-		log.Fatal("Error parsing URL:", err)
+		log.Println("Error parsing URL:", err)
 		return "", err
 	}
 
@@ -30,7 +30,7 @@ func FormatDynamicUrl(data map[string]string) (string, error) {
 	endpoint := constants.ConstantLinks["endpoint"]["url"]
 	urlObj, err := url.Parse(endpoint)
 	if err != nil {
-		log.Fatal("Error parsing URL:", err)
+		log.Println("Error parsing URL:", err)
 		return "", err
 	}
 

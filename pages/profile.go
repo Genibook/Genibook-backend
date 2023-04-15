@@ -55,7 +55,7 @@ func ProfileData(c *colly.Collector, user int) models.Student {
 						age, err := strconv.Atoi(tr.Find("td:nth-child(2)").Text())
 						if err != nil {
 							age = 0
-							log.Fatal("profile.go - age of student did not convert to int")
+							log.Println("profile.go - age of student did not convert to int")
 						}
 						student.Age = age
 					} else if i == trs.Length()-2 {
@@ -76,7 +76,7 @@ func ProfileData(c *colly.Collector, user int) models.Student {
 
 						grade_int, err := strconv.Atoi(tr.Find("td > span[style=\"font-size: 2em;\"]").Text())
 						if err != nil {
-							log.Fatal("profile.go - grade did not convert to int")
+							log.Println("profile.go - grade did not convert to int")
 						}
 						student.Grade = grade_int
 					} else if i == 1 {
@@ -86,7 +86,7 @@ func ProfileData(c *colly.Collector, user int) models.Student {
 								student_id_int, err := strconv.Atoi(s.Text())
 								if err != nil {
 									student_id_int = 0
-									log.Fatal("profile.go - student id did not convert to int")
+									log.Println("profile.go - student id did not convert to int")
 								}
 								student.ID = student_id_int
 
@@ -94,7 +94,7 @@ func ProfileData(c *colly.Collector, user int) models.Student {
 								state_ID, err := strconv.Atoi(s.Text())
 								if err != nil {
 									state_ID = 0
-									log.Fatal("profile.go - state id did not convert to int")
+									log.Println("profile.go - state id did not convert to int")
 								}
 								student.StateID = state_ID
 							}
@@ -114,10 +114,13 @@ func ProfileData(c *colly.Collector, user int) models.Student {
 
 	profile_url, err := utils.FormatUrl("profile")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return student
 	}
-	c.Visit(profile_url)
+	err = c.Visit(profile_url)
+	if err != nil {
+		log.Println("Couldn't visit profile url, function: ProfileData, file: profile.go")
+	}
 	c.OnHTMLDetach("body")
 
 	c.OnResponse(func(r *colly.Response) {

@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -16,27 +15,27 @@ func Init_colly() (*colly.Collector, error) {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Error loading .env file")
 		return c, err
 	}
 
 	Login(c, os.Getenv("username"), os.Getenv("password"))
 
-	c.OnRequest(func(r *colly.Request) {
-		// Print the URL of the page being visited
-		fmt.Println("~~~~~~~~~~")
-		fmt.Println("Visiting:", r.URL.String())
-		fmt.Println("~~~~~~~~~~")
-	})
+	// c.OnRequest(func(r *colly.Request) {
+	// 	// Print the URL of the page being visited
+	// 	fmt.Println("~~~~~~~~~~")
+	// 	fmt.Println("Visiting:", r.URL.String())
+	// 	fmt.Println("~~~~~~~~~~")
+	// })
 
-	c.OnHTML("title", func(e *colly.HTMLElement) {
-		title := e.Text
-		fmt.Println("------------")
-		fmt.Print("We are scrapping the website with title: ")
-		fmt.Println(title)
-		fmt.Println("------------")
-	})
+	// c.OnHTML("title", func(e *colly.HTMLElement) {
+	// 	title := e.Text
+	// 	fmt.Println("------------")
+	// 	fmt.Print("We are scrapping the website with title: ")
+	// 	fmt.Println(title)
+	// 	fmt.Println("------------")
+	// })
 
-	fmt.Println("finished initialization!")
+	log.Println("finished initialization!")
 	return c, nil
 }
