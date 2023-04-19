@@ -49,6 +49,9 @@ var CourseSummaryNameAssignment = "assignment"
 var CourseSummaryNameDescription = "description"
 var CourseSummaryNameCategory = "category"
 
+var NotGradedString = "Not Graded"
+var AssignmentPtsString = "Assignment Pts: "
+
 // In Go, you can create a dictionary (also called a map) using the built-in make function. Here's an example:
 
 // go

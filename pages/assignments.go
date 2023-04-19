@@ -66,13 +66,13 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 						aAssignment.FullDayName = utils.DayClassifier(aAssignment.DayName)
 						aAssignment.Date = strings.TrimSpace(date)
 					} else if i == constants.CourseSummaryGradeIndex {
-						utils.ProcessGradeCell(s)
-					} else if i == constants.CourseSummaryCommentIndex {
-						aAssignment.Comment = strings.TrimSpace(s.Text())
+						aAssignment.GradeNum, aAssignment.GradePercent = utils.ProcessGradeCellForAssignment(s)
+					} else if i >= constants.CourseSummaryCommentIndex {
+						aAssignment.Comment = utils.CleanAString(s.Text())
 					} else if i == constants.CourseSummaryPrevIndex {
-						aAssignment.Prev = strings.TrimSpace(s.Text())
+						aAssignment.Prev = utils.CleanAString(s.Text())
 					} else if i == constants.CourseSummaryDocsIndex {
-						aAssignment.Docs = strings.TrimSpace(s.Text())
+						aAssignment.Docs = utils.CleanAString(s.Text())
 					}
 				})
 

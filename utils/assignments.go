@@ -61,9 +61,87 @@ func BasicDataExtractor(row *goquery.Selection, courseName string) map[string]st
 	return data
 }
 
-func ProcessGradeCell(s *goquery.Selection) {
-	//TODO finish later
-	panic(1)
+func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
+	//Cell types
+
+	/*
+
+		Goofy eetash cell
+
+		<div>
+		x0.5
+		</div>
+		10/10
+		<div>
+		100.0%
+		<div>
+
+		Normal Cell
+		10/10
+		<div>
+		100.0%
+		</div>
+
+		"ungraded" cell
+		<div>
+			<subdiv1>
+			not graded
+			</subdiv1>
+			<subdiv2>
+			assignment points: 2
+			</subdiv2>
+		<div>
+
+
+	*/
+	gradeNum := ""
+	gradePercent := ""
+
+	nodes := s.Contents()
+	for _, node := range nodes.Nodes {
+		if node.Type == html.TextNode {
+			htmlText := node.Data
+			htmlText = CleanAString(htmlText)
+			// this one is ALWAYS the x / z
+			gradeNum = htmlText
+		}
+
+	}
+	divs := s.Find("div")
+	lenDivs := divs.Length()
+
+	if lenDivs == 1 {
+		subDivs := divs.Find("div")
+		if subDivs.Length() == 0 {
+			//normal cell
+			gradePercent = CleanAString(divs.Text())
+		} else {
+			// ungraded cell
+			subDivs.Each(func(i int, s *goquery.Selection) {
+				if i == 1 {
+					gradeNum = constants.NotGradedString
+					gradePoints := CleanAString(s.Text())
+
+					gradePercent = strings.ReplaceAll(gradePoints, constants.AssignmentPtsString, "")
+				}
+			})
+
+		}
+
+	} else if lenDivs == 2 {
+		//sussy eetash cell
+		divs.Each(func(i int, s *goquery.Selection) {
+			if i == 0 {
+				x_modifier := CleanAString(s.Find("span").Text())
+				gradeNum = x_modifier + " " + gradeNum
+			} else if i == 1 {
+				// we replace the % and then add it in the front end when neccessary
+				gradePercent = strings.ReplaceAll(CleanAString(s.Text()), "%", "")
+			}
+		})
+
+	}
+	return gradeNum, gradePercent
 }
 
 func ProcessDueCell(s *goquery.Selection) (dayname string, date string) {
