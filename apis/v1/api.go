@@ -82,40 +82,25 @@ func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, passwo
 }
 
 func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-
 	functionName := "Func ProfileHandlerV1"
 
-	c, e := utils.InitAndLogin(email, password, highSchool)
-	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
-	student := pages.ProfileData(c, userSelector, highSchool)
+	student, err := GetProfile(w, functionName, email, password, highSchool, userSelector)
 
+	if err != nil {
+		return
+	}
 	ReturnJsonData(student, w, functionName+": Json Parsing Error")
 }
 
 // <note>: userSelector is 1st indexed meaning the first user is 1, second is 2.
 // Backend processes it like that
 func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	mp, err := GetMP(w, r)
-	if err != nil {
-		return
-	}
 
 	functionName := "Func GradesHandlerV1"
 
-	c, e := utils.InitAndLogin(email, password, highSchool)
-	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
-
-	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		return
-	}
-
-	weeklySumData := pages.GradebookData(c, IDS[userSelector-1], mp, highSchool)
-
-	grades := map[string]map[string]string{}
-	for key := range weeklySumData {
-		oneGrade := weeklySumData[key]
-		grades[key] = oneGrade.ToDict()
 	}
 
 	ReturnJsonData(grades, w, functionName+": Json Parsing Error")
