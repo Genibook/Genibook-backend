@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 	"webscrapper/constants"
 	"webscrapper/pages"
 	"webscrapper/utils"
@@ -38,8 +39,20 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 			http.Error(w, "user key is <=0", http.StatusNotAcceptable)
 			return
 		}
+		key := r.URL.Query().Get(constants.HighSchoolFormKey)
+		kValid := false
+		for k := range constants.ConstantLinks {
+			if k == key {
+				kValid = true
+			}
+		}
+		if !kValid {
+			log.Println("Someone tried to use a sussy highschool")
+			http.Error(w, "High School Not Available", http.StatusNoContent)
+			return
+		}
 
-		fn(w, r, r.URL.Query().Get(constants.UsernameFormKey), r.URL.Query().Get(constants.PasswordFormKey), r.URL.Query().Get(constants.HighSchoolFormKey), userSelector)
+		fn(w, r, r.URL.Query().Get(constants.UsernameFormKey), r.URL.Query().Get(constants.PasswordFormKey), key, userSelector)
 	}
 }
 
@@ -85,6 +98,12 @@ func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, pass
 func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	mp := r.URL.Query().Get(constants.MPFormKey)
 
+	if !strings.Contains(mp, "MP") {
+		log.Println("Marking Period Not Valid: " + mp)
+		http.Error(w, "Marking Period Not Valid: "+mp, http.StatusNotAcceptable)
+		return
+	}
+
 	c, e := utils.InitAndLogin(email, password, highSchool)
 	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
 
@@ -109,3 +128,12 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(jsonData))
 }
+
+func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	mp := r.URL.Query().Get(constants.MPFormKey)
+	fmt.Println(pages.GimmeCourseCodes(c, 107604, mp))
+}
+
+// func ScheduleHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int){
+
+// }
