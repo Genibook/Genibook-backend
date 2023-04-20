@@ -77,10 +77,11 @@ func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, pass
 	w.Write([]byte(jsonData))
 }
 
+// TODO: update this so that it gets mp and id
 func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	c, e := utils.InitAndLogin(email, password, highSchool)
 	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
-	weeklySumData := pages.GradebookData(c, 107604, "MP1", constants.MontgomeryHighSchoolKeyName)
+	weeklySumData := pages.GradebookData(c, 107604, "MP1", highSchool)
 	grades := map[string]map[string]string{}
 	for key := range weeklySumData {
 		oneGrade := weeklySumData[key]
