@@ -129,7 +129,3 @@ func ScheduleAssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email s
 	ReturnJsonData(scheduleAssignments, w, functionName+": Json Parsing Error")
 
 }
-
-// func ScheduleHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int){
-
-// }
