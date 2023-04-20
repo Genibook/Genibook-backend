@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"strings"
 	"webscrapper/constants"
 
@@ -98,15 +99,21 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 	gradePercent := ""
 
 	nodes := s.Contents()
-	for _, node := range nodes.Nodes {
+	for i, node := range nodes.Nodes {
 		if node.Type == html.TextNode {
-			htmlText := node.Data
-			htmlText = CleanAString(htmlText)
 			// this one is ALWAYS the x / z
-			gradeNum = htmlText
+			if i%2 == 0 {
+				if CleanAString(node.Data) != "" {
+					gradeNum = strings.ReplaceAll(CleanAString(node.Data), " ", "")
+					fmt.Printf("gradeNum: %v\n", gradeNum)
+				}
+
+			}
+
 		}
 
 	}
+
 	divs := s.Find("div")
 	lenDivs := divs.Length()
 
@@ -141,6 +148,7 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 		})
 
 	}
+
 	return gradeNum, gradePercent
 }
 
