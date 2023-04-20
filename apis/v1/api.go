@@ -10,11 +10,11 @@ import (
 	"webscrapper/utils"
 )
 
-var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
+var validPath = regexp.MustCompile("^/(edit|login|)/")
 
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		m := validPath.FindStringSubmatch(r.URL.Path)
+		m := validPath.Find([]byte(r.URL.Path))
 		if m == nil {
 			http.NotFound(w, r)
 			return
@@ -26,7 +26,7 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 		}
 		fmt.Println(m)
 
-		userSelectorString := r.PostFormValue(constants.UserSelectorFormKey)
+		userSelectorString := r.URL.Query().Get(constants.UserSelectorFormKey)
 		userSelector, err := strconv.Atoi(userSelectorString)
 		if err != nil {
 			// ... handle error
@@ -36,7 +36,7 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 
 		}
 
-		fn(w, r, r.PostFormValue(constants.UsernameFormKey), r.PostFormValue(constants.PasswordFormKey), r.PostFormValue(constants.HighSchoolFormKey), userSelector)
+		fn(w, r, r.URL.Query().Get(constants.UsernameFormKey), r.URL.Query().Get(constants.PasswordFormKey), r.URL.Query().Get(constants.HighSchoolFormKey), userSelector)
 	}
 }
 

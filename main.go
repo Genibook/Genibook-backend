@@ -29,9 +29,9 @@ func main() {
 
 	// }
 	// http.HandleFunc("/view/", makeHandler(viewHandler))
-	// http.HandleFunc("/edit/", makeHandler(editHandler))
+	http.HandleFunc("/hi/", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("hiiii")) })
 	http.HandleFunc("/login/", api_v1.MakeHandler(api_v1.LoginHandlerV1))
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8069", nil))
 	//pages.GradebookData(c, 107604, "MP1")
 
 }
