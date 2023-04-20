@@ -9,7 +9,7 @@ import (
 	"webscrapper/utils"
 )
 
-var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments|schedule)/")
+var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments|schedule|student)/")
 
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -83,10 +83,10 @@ func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, pass
 	functionName := "Func ProfileHandlerV1"
 
 	student, err := GetProfile(w, functionName, email, password, highSchool, userSelector)
-
 	if err != nil {
 		return
 	}
+
 	ReturnJsonData(student, w, functionName+": Json Parsing Error")
 }
 
@@ -127,5 +127,29 @@ func ScheduleAssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email s
 	}
 
 	ReturnJsonData(scheduleAssignments, w, functionName+": Json Parsing Error")
+
+}
+
+func StudentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+
+	functionName := "Func StudentHandlerV1"
+
+	student, err := GetProfile(w, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		return
+	}
+
+	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		return
+	}
+
+	assignments, err := GetAssignments(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		return
+	}
+
+	ret := CombineGradeAssiandProfile(assignments, grades, student)
+	ReturnJsonData(ret, w, functionName+": Json Parsing Error")
 
 }

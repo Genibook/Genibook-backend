@@ -24,6 +24,7 @@ func main() {
 
 	// }
 	// http.HandleFunc("/view/", makeHandler(viewHandler))
+	http.HandleFunc("/student/", api_v1.MakeHandler(api_v1.StudentHandlerV1))
 	http.HandleFunc("/schedule/", api_v1.MakeHandler(api_v1.ScheduleAssignmentHandlerV1))
 	http.HandleFunc("/assignments/", api_v1.MakeHandler(api_v1.AssignmentHandlerV1))
 	http.HandleFunc("/grades/", api_v1.MakeHandler(api_v1.GradesHandlerV1))

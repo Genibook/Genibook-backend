@@ -1,9 +1,5 @@
 package models
 
-import (
-	"encoding/json"
-)
-
 type Student struct {
 	Age           int    `json:"age"`
 	ImgURL        string `json:"img_url"`
@@ -18,10 +14,18 @@ type Student struct {
 	Image64       string `json:"image64"`
 }
 
-func (s *Student) ToJson() (string, error) {
-	jsonData, err := json.Marshal(s)
-	if err != nil {
-		return "", err
-	}
-	return string(jsonData), nil
+func (s *Student) ToDict() map[interface{}]interface{} {
+	ret := map[interface{}]interface{}{}
+	ret["age"] = s.Age
+	ret["img_url"] = s.ImgURL
+	ret["state_id"] = s.StateID
+	ret["birthday"] = s.Birthday
+	ret["schedule_link"] = s.ScheduleLink
+	ret["name"] = s.Name
+	ret["grade"] = s.Grade
+	ret["locker"] = s.Locker
+	ret["counselor_name"] = s.CounselorName
+	ret["id"] = s.ID
+	ret["image64"] = s.Image64
+	return ret
 }
