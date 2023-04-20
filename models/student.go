@@ -14,8 +14,8 @@ type Student struct {
 	Image64       string `json:"image64"`
 }
 
-func (s *Student) ToDict() map[interface{}]interface{} {
-	ret := map[interface{}]interface{}{}
+func (s *Student) ToDict() map[string]interface{} {
+	ret := map[string]interface{}{}
 	ret["age"] = s.Age
 	ret["img_url"] = s.ImgURL
 	ret["state_id"] = s.StateID

@@ -24,7 +24,7 @@ func ReturnJsonData(object interface{}, w http.ResponseWriter, name string) erro
 	return nil
 }
 
-func CombineGradeAssiandProfile(assignments map[string][]models.Assignment, grades map[string]map[string]string, profile models.Student) map[interface{}]interface{} {
+func CombineGradeAssiandProfile(assignments map[string][]models.Assignment, grades map[string]map[string]string, profile models.Student) map[string]interface{} {
 	student := profile.ToDict()
 	student["assignments"] = assignments
 	student["grades"] = grades
