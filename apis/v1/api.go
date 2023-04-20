@@ -1,7 +1,6 @@
 package api_v1
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"regexp"
@@ -12,7 +11,7 @@ import (
 	"webscrapper/utils"
 )
 
-var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments)/")
+var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments|schedule)/")
 
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -83,13 +82,14 @@ func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, passwo
 }
 
 func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+
+	functionName := "Func ProfileHandlerV1"
+
 	c, e := utils.InitAndLogin(email, password, highSchool)
-	utils.APIPrintSpecificError("Func Profile Handler V1: Couldn't init/login", w, e, http.StatusInternalServerError)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
 	student := pages.ProfileData(c, userSelector, highSchool)
-	jsonData, e := student.ToJson()
-	utils.APIPrintSpecificError("Func Profile Handler V1: Json Parsing Error", w, e, http.StatusInternalServerError)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(jsonData))
+
+	ReturnJsonData(student, w, functionName+": Json Parsing Error")
 }
 
 // <note>: userSelector is 1st indexed meaning the first user is 1, second is 2.
@@ -100,8 +100,10 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 		return
 	}
 
+	functionName := "Func GradesHandlerV1"
+
 	c, e := utils.InitAndLogin(email, password, highSchool)
-	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
 
 	IDS, err := GetIDs(userSelector, c, highSchool, w)
 	if err != nil {
@@ -115,11 +117,8 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 		oneGrade := weeklySumData[key]
 		grades[key] = oneGrade.ToDict()
 	}
-	jsonData, e := json.Marshal(grades)
-	utils.APIPrintSpecificError("Func GradesHandlerV1: Json Parsing Error", w, e, http.StatusInternalServerError)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(jsonData))
+	ReturnJsonData(grades, w, functionName+": Json Parsing Error")
 }
 
 func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
@@ -129,8 +128,10 @@ func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, p
 		return
 	}
 
+	functionName := "Func AssignmentHandlerV1"
+
 	c, e := utils.InitAndLogin(email, password, highSchool)
-	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
 
 	IDS, err := GetIDs(userSelector, c, highSchool, w)
 	if err != nil {
@@ -143,10 +144,34 @@ func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, p
 		aCoursesAssignments := pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
 		courseAssignments[courseName] = aCoursesAssignments
 	}
-	jsonData, e := json.Marshal(courseAssignments)
-	utils.APIPrintSpecificError("Func AssignmentHandlerV1: Json Parsing Error", w, e, http.StatusInternalServerError)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(jsonData))
+	ReturnJsonData(courseAssignments, w, functionName+": Json Parsing Error")
+
+}
+
+func ScheduleAssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	scheduleAssignments := map[string][]models.ScheduleAssignment{}
+	mp, err := GetMP(w, r)
+	if err != nil {
+		return
+	}
+
+	functionName := "Func ScheduleAssignmentHandlerV1"
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return
+	}
+	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	for courseName := range codesAndSections {
+		aCoursesDict := codesAndSections[courseName]
+		aScheduleAssignments := pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		scheduleAssignments[courseName] = aScheduleAssignments
+	}
+
+	ReturnJsonData(scheduleAssignments, w, functionName+": Json Parsing Error")
 
 }
 
