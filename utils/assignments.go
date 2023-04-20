@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"strings"
 	"webscrapper/constants"
 
@@ -105,7 +104,7 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 			if i%2 == 0 {
 				if CleanAString(node.Data) != "" {
 					gradeNum = strings.ReplaceAll(CleanAString(node.Data), " ", "")
-					fmt.Printf("gradeNum: %v\n", gradeNum)
+					//fmt.Printf("gradeNum: %v\n", gradeNum)
 				}
 
 			}

@@ -65,6 +65,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 						aAssignment.DayName = strings.TrimSpace(dayname)
 						aAssignment.FullDayName = utils.DayClassifier(aAssignment.DayName)
 						aAssignment.Date = strings.TrimSpace(date)
+						aAssignment.FullDate = aAssignment.Date
 					} else if i == constants.CourseSummaryGradeIndex {
 						aAssignment.GradeNum, aAssignment.GradePercent = utils.ProcessGradeCellForAssignment(s)
 					} else if i >= constants.CourseSummaryCommentIndex {
