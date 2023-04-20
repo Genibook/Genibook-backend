@@ -90,7 +90,7 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 
 	IDS := pages.StudentIdAndCurrMP(c, highSchool)
 
-	if userSelector >= len(IDS) {
+	if userSelector > len(IDS) {
 		log.Printf("User selector index >= len(available IDS) Length: %d\n", len(IDS))
 		http.Error(w, fmt.Sprintf("User selector index >= len(available IDS) Length: %d", len(IDS)), http.StatusNotAcceptable)
 		return
