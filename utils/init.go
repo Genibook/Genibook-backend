@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"time"
 	"webscrapper/constants"
 
 	"github.com/gocolly/colly"
@@ -13,7 +15,8 @@ func Init_colly() *colly.Collector {
 
 	c := colly.NewCollector()
 	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-	//log.Println("Finished colly initialization!")
+	now := time.Now()
+	fmt.Println("Connection Established With Backend at Time: " + now.Format("2006-01-02 15:04:05"))
 	return c
 }
 
