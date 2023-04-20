@@ -18,7 +18,7 @@ type Student struct {
 	Image64       string `json:"image64"`
 }
 
-func (s *Student) toJson() (string, error) {
+func (s *Student) ToJson() (string, error) {
 	jsonData, err := json.Marshal(s)
 	if err != nil {
 		return "", err

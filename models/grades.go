@@ -9,7 +9,7 @@ type OneGrade struct {
 	TeacherEmail string  `json:"teacher_email"`
 }
 
-func (s *OneGrade) toJson() (string, error) {
+func (s *OneGrade) ToJson() (string, error) {
 	jsonData, err := json.Marshal(s)
 	if err != nil {
 		return "", err

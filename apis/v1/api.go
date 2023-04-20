@@ -1,7 +1,6 @@
 package api_v1
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -69,12 +68,11 @@ func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, passwo
 
 func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	c, e := utils.InitAndLogin(email, password, highSchool)
-	if e != nil {
-		log.Println("Func Grades Hanlder V1: Error Init and Logging in")
-		http.Error(w, e.Error(), http.StatusInternalServerError)
-		return
-	}
+	utils.APIPrintSpecificError("Func Profile Handler V1: Couldn't init/login", w, e, http.StatusInternalServerError)
 	student := pages.ProfileData(c, userSelector, highSchool)
-	fmt.Printf("student: %v\n", student)
+	jsonData, e := student.ToJson()
+	utils.APIPrintSpecificError("Func Profile Handler V1: Json Parsing Error", w, e, http.StatusInternalServerError)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(jsonData))
 
 }
