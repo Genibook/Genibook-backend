@@ -1,10 +1,13 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"strconv"
+)
 
 type OneGrade struct {
 	// Subject      string  `json:"subject"`
-	Grade        float32 `json:"grade"`
+	Grade        float64 `json:"grade"`
 	TeacherName  string  `json:"teacher_name"`
 	TeacherEmail string  `json:"teacher_email"`
 }
@@ -15,6 +18,14 @@ func (s *OneGrade) ToJson() (string, error) {
 		return "", err
 	}
 	return string(jsonData), nil
+}
+
+func (s *OneGrade) ToDict() map[string]string {
+	grade := map[string]string{}
+	grade["grade"] = strconv.FormatFloat(s.Grade, 'f', -1, 32)
+	grade["teacher_name"] = s.TeacherName
+	grade["teacher_email"] = s.TeacherEmail
+	return grade
 }
 
 // mathGrade := Grade{

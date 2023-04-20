@@ -1,6 +1,7 @@
 package api_v1
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"regexp"
@@ -10,7 +11,7 @@ import (
 	"webscrapper/utils"
 )
 
-var validPath = regexp.MustCompile("^/(edit|login|profile)/")
+var validPath = regexp.MustCompile("^/(edit|login|profile|grades|)/")
 
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -74,5 +75,19 @@ func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, pass
 	utils.APIPrintSpecificError("Func Profile Handler V1: Json Parsing Error", w, e, http.StatusInternalServerError)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(jsonData))
+}
 
+func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
+	weeklySumData := pages.GradebookData(c, 107604, "MP1", constants.MontgomeryHighSchoolKeyName)
+	grades := map[string]map[string]string{}
+	for key := range weeklySumData {
+		oneGrade := weeklySumData[key]
+		grades[key] = oneGrade.ToDict()
+	}
+	jsonData, e := json.Marshal(grades)
+	utils.APIPrintSpecificError("Func GradesHandlerV1: Json Parsing Error", w, e, http.StatusInternalServerError)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(jsonData))
 }

@@ -67,7 +67,7 @@ func GradebookData(c *colly.Collector, studentId int, mpToView string, school st
 							log.Println("gradebook.go - couldn't convert grade string to float grade")
 							log.Println(err)
 						}
-						aGrade.Grade = float32(float_grade)
+						aGrade.Grade = float64(float_grade)
 					}
 				})
 				grades[courseName] = aGrade
