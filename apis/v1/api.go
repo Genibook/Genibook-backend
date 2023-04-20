@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"webscrapper/constants"
+	"webscrapper/pages"
 	"webscrapper/utils"
 )
 
@@ -41,18 +42,17 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 }
 
 func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	c, e := utils.Init_colly()
+	c := utils.Init_colly()
+	e := utils.Login(c, email, password, highSchool)
+
 	if e != nil {
-		http.Error(w, e.Error(), http.StatusInternalServerError)
-		return
-	}
-	e = utils.Login(c, email, password, highSchool)
-	if e != nil {
+		log.Println("Func Login Hanlder - Incorrect Password and Username <Note: It is OK if this happens>")
 		http.Error(w, e.Error(), http.StatusUnauthorized)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	return
+
 	// data := map[string]string{
 	// 	"name":  "John",
 	// 	"email": "john@example.com",
@@ -66,4 +66,16 @@ func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, passwo
 
 	// w.Header().Set("Content-Type", "application/json")
 	// w.Write(jsonData)
+}
+
+func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	if e != nil {
+		log.Println("Func Grades Hanlder V1: Error Init and Logging in")
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+	student := pages.ProfileData(c, userSelector, highSchool)
+	fmt.Printf("student: %v\n", student)
+
 }

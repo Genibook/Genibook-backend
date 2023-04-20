@@ -9,28 +9,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func Init_colly() (*colly.Collector, error) {
+func Init_colly() *colly.Collector {
 
 	c := colly.NewCollector()
 	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-
-	// c.OnRequest(func(r *colly.Request) {
-	// 	// Print the URL of the page being visited
-	// 	fmt.Println("~~~~~~~~~~")
-	// 	fmt.Println("Visiting:", r.URL.String())
-	// 	fmt.Println("~~~~~~~~~~")
-	// })
-
-	// c.OnHTML("title", func(e *colly.HTMLElement) {
-	// 	title := e.Text
-	// 	fmt.Println("------------")
-	// 	fmt.Print("We are scrapping the website with title: ")
-	// 	fmt.Println(title)
-	// 	fmt.Println("------------")
-	// })
-
 	log.Println("finished initialization!")
-	return c, nil
+	return c
 }
 
 func Login(c *colly.Collector, username string, password string, school string) error {
@@ -49,6 +33,16 @@ func Login(c *colly.Collector, username string, password string, school string) 
 	log.Println("successful login!")
 	return nil
 
+}
+
+func InitAndLogin(email string, password string, highSchool string) (*colly.Collector, error) {
+	c := Init_colly()
+	e := Login(c, email, password, highSchool)
+
+	if e != nil {
+		return c, e
+	}
+	return c, e
 }
 
 func DebugLogin(c *colly.Collector) (*colly.Collector, error) {
