@@ -19,7 +19,7 @@ func GradebookData(c *colly.Collector, studentId int, mpToView string, school st
 	data := constants.ConstantLinks[school]["gradebook"]
 	data["studentid"] = strconv.Itoa(studentId)
 	data["mpToView"] = mpToView
-	gradebook_url, err := utils.FormatDynamicUrl(data)
+	gradebook_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
 		log.Println(err)
 		return grades
@@ -126,7 +126,7 @@ func GimmeCourseCodes(c *colly.Collector, studentId int, mpToView string, school
 	data := constants.ConstantLinks[school]["gradebook"]
 	data["studentid"] = strconv.Itoa(studentId)
 	data["mpToView"] = mpToView
-	gradebook_url, err := utils.FormatDynamicUrl(data)
+	gradebook_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
 		log.Println(err)
 		return courseCodes

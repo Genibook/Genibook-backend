@@ -20,7 +20,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 	data["mpToView"] = mpToView
 	data["courseCode"] = courseCode
 	data["courseSection"] = courseSection
-	assignemnts_url, err := utils.FormatDynamicUrl(data)
+	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
 		log.Println(err)
 		return assignments
@@ -100,7 +100,7 @@ func ScheduleDataForACourse(c *colly.Collector, studentId int, mpToView string, 
 	data["mpToView"] = mpToView
 	data["courseCode"] = courseCode
 	data["courseSection"] = courseSection
-	assignemnts_url, err := utils.FormatDynamicUrl(data)
+	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
 		log.Println(err)
 		return assignments

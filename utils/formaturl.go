@@ -6,9 +6,9 @@ import (
 	"webscrapper/constants"
 )
 
-func FormatUrl(key string) (string, error) {
+func FormatUrl(key string, school string) (string, error) {
 
-	endpoint := constants.ConstantLinks["endpoint"]["url"]
+	endpoint := constants.ConstantLinks[school]["endpoint"]["url"]
 	urlObj, err := url.Parse(endpoint)
 	if err != nil {
 		log.Println("Error parsing URL:", err)
@@ -17,7 +17,7 @@ func FormatUrl(key string) (string, error) {
 
 	// Encode the POST data as a URL-encoded string
 	postData := url.Values{}
-	for key, val := range constants.ConstantLinks[key] {
+	for key, val := range constants.ConstantLinks[school][key] {
 		postData.Set(key, val)
 	}
 	postDataStr := postData.Encode()
@@ -25,9 +25,9 @@ func FormatUrl(key string) (string, error) {
 	return formattedURL, nil
 }
 
-func FormatDynamicUrl(data map[string]string) (string, error) {
+func FormatDynamicUrl(data map[string]string, school string) (string, error) {
 
-	endpoint := constants.ConstantLinks["endpoint"]["url"]
+	endpoint := constants.ConstantLinks[school]["endpoint"]["url"]
 	urlObj, err := url.Parse(endpoint)
 	if err != nil {
 		log.Println("Error parsing URL:", err)

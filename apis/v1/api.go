@@ -12,7 +12,7 @@ import (
 
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 
-func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, string, int)) http.HandlerFunc {
+func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		m := validPath.FindStringSubmatch(r.URL.Path)
 		if m == nil {
@@ -36,11 +36,11 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 
 		}
 
-		fn(w, r, m[2], r.PostFormValue(constants.UsernameFormKey), r.PostFormValue(constants.PasswordFormKey), r.PostFormValue(constants.HighSchoolFormKey), userSelector)
+		fn(w, r, r.PostFormValue(constants.UsernameFormKey), r.PostFormValue(constants.PasswordFormKey), r.PostFormValue(constants.HighSchoolFormKey), userSelector)
 	}
 }
 
-func LoginHandlerV1(w http.ResponseWriter, r *http.Request, title string, email string, password string, highSchool string, userSelector int) {
+func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	c, e := utils.Init_colly()
 	if e != nil {
 		http.Error(w, e.Error(), http.StatusInternalServerError)

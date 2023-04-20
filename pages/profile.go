@@ -112,7 +112,7 @@ func ProfileData(c *colly.Collector, user int, school string) models.Student {
 	})
 	// deteaches this thing, can be used later in functions maybe!
 
-	profile_url, err := utils.FormatUrl("profile")
+	profile_url, err := utils.FormatUrl("profile", school)
 	if err != nil {
 		log.Println(err)
 		return student
