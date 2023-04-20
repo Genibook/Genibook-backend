@@ -62,38 +62,7 @@ func BasicDataExtractor(row *goquery.Selection, courseName string) map[string]st
 }
 
 func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
-	//Cell types
 
-	/*
-
-		Goofy eetash cell
-
-		<div>
-		x0.5
-		</div>
-		10/10
-		<div>
-		100.0%
-		<div>
-
-		Normal Cell
-		10/10
-		<div>
-		100.0%
-		</div>
-
-		"ungraded" cell
-		<div>
-			<subdiv1>
-			not graded
-			</subdiv1>
-			<subdiv2>
-			assignment points: 2
-			</subdiv2>
-		<div>
-
-
-	*/
 	gradeNum := ""
 	gradePercent := ""
 
@@ -116,9 +85,9 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 	divs := s.Find("div")
 	lenDivs := divs.Length()
 
-	if lenDivs == 1 {
+	if lenDivs == constants.ANotSussyGradeCellDivCount {
 		subDivs := divs.Find("div")
-		if subDivs.Length() == 0 {
+		if subDivs.Length() == constants.GradeCellThatIsJustNormaSubDivCount {
 			//normal cell
 			gradePercent = CleanAString(divs.Text())
 		} else {
@@ -149,6 +118,29 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 	}
 
 	return gradeNum, gradePercent
+}
+
+func ProcessGradeCellForSchedule(s *goquery.Selection) string {
+	gradePoints := ""
+
+	divs := s.Find("div")
+	lenDivs := divs.Length()
+
+	if lenDivs == constants.ANotSussyGradeCellDivCount {
+		subDivs := divs.Find("div")
+		if subDivs.Length() == constants.GradeCellThatHasNotGradedSubDivCount {
+			// ungraded cell
+			subDivs.Each(func(i int, s *goquery.Selection) {
+				if i == 1 {
+					gradePoints = strings.ReplaceAll(CleanAString(s.Text()), constants.AssignmentPtsString, "")
+				}
+			})
+
+		}
+
+	}
+
+	return gradePoints
 }
 
 func ProcessDueCell(s *goquery.Selection) (dayname string, date string) {
