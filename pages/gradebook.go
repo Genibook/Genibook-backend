@@ -13,10 +13,10 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func GradebookData(c *colly.Collector, studentId int, mpToView string) map[string]models.OneGrade {
+func GradebookData(c *colly.Collector, studentId int, mpToView string, school string) map[string]models.OneGrade {
 	grades := map[string]models.OneGrade{}
 
-	data := constants.ConstantLinks["gradebook"]
+	data := constants.ConstantLinks[school]["gradebook"]
 	data["studentid"] = strconv.Itoa(studentId)
 	data["mpToView"] = mpToView
 	gradebook_url, err := utils.FormatDynamicUrl(data)
@@ -87,7 +87,7 @@ func GradebookData(c *colly.Collector, studentId int, mpToView string) map[strin
 
 }
 
-func GimmeCourseCodes(c *colly.Collector, studentId int, mpToView string) map[string]map[string]string {
+func GimmeCourseCodes(c *colly.Collector, studentId int, mpToView string, school string) map[string]map[string]string {
 	courseCodes := map[string]map[string]string{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
@@ -123,7 +123,7 @@ func GimmeCourseCodes(c *colly.Collector, studentId int, mpToView string) map[st
 		})
 	})
 
-	data := constants.ConstantLinks["gradebook"]
+	data := constants.ConstantLinks[school]["gradebook"]
 	data["studentid"] = strconv.Itoa(studentId)
 	data["mpToView"] = mpToView
 	gradebook_url, err := utils.FormatDynamicUrl(data)

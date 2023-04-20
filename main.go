@@ -3,17 +3,17 @@ package main
 import (
 	"log"
 	"net/http"
-	"webscrapper/utils"
+	api_v1 "webscrapper/apis/v1"
 )
 
 func main() {
-	c, e := utils.Init_colly()
-	utils.DebugLogin(c)
-	if e != nil {
-		log.Fatal("error initing colly scrapper")
-		log.Fatal(e)
-		return
-	}
+	// c, e := utils.Init_colly()
+	// if e != nil {
+	// 	log.Fatal("error initing colly scrapper")
+	// 	log.Fatal(e)
+	// 	return
+	// }
+	// utils.DebugLogin(c)
 	// // student := pages.ProfileData(c, 1)
 	// // fmt.Printf("student: %v\n", student)
 	// //pages.ProfileData(c, 1)
@@ -30,7 +30,7 @@ func main() {
 	// }
 	// http.HandleFunc("/view/", makeHandler(viewHandler))
 	// http.HandleFunc("/edit/", makeHandler(editHandler))
-	// http.HandleFunc("/save/", makeHandler(saveHandler))
+	http.HandleFunc("/login/", api_v1.MakeHandler(api_v1.LoginHandlerV1))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 	//pages.GradebookData(c, 107604, "MP1")
 

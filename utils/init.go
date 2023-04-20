@@ -33,19 +33,21 @@ func Init_colly() (*colly.Collector, error) {
 	return c, nil
 }
 
-func Login(c *colly.Collector, username string, password string) {
+func Login(c *colly.Collector, username string, password string, school string) error {
 	// authenticate
 	data := map[string]string{
-		constants.ConstantLinks["login"]["username"]: username,
-		constants.ConstantLinks["login"]["password"]: password,
+		constants.ConstantLinks[school]["login"]["username"]: username,
+		constants.ConstantLinks[school]["login"]["password"]: password,
 	}
-	err := c.Post(constants.ConstantLinks["login"]["url"], data)
+	err := c.Post(constants.ConstantLinks[school]["login"]["url"], data)
 	if err != nil {
 		log.Println(err)
 		log.Println("Failed login")
 		// maybe an api call to login or smth and then deal with it like that return the error etc
+		return err
 	}
 	log.Println("successful login!")
+	return nil
 
 }
 
@@ -56,7 +58,7 @@ func DebugLogin(c *colly.Collector) (*colly.Collector, error) {
 		return c, err
 	}
 
-	Login(c, os.Getenv("username"), os.Getenv("password"))
+	Login(c, os.Getenv("username"), os.Getenv("password"), constants.MontgomeryHighSchoolKeyName)
 
 	return c, nil
 }

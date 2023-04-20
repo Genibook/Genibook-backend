@@ -1,36 +1,38 @@
 package constants
 
-var ConstantLinks = map[string]map[string]string{
-	"base":     {"url": "https://parents.mtsd.k12.nj.us"},
-	"endpoint": {"url": "https://parents.mtsd.k12.nj.us/genesis/parents?"},
-	"home":     {"url": "https://parents.mtsd.k12.nj.us/genesis/sis/view?gohome=true"},
-	"profile": {
-		"tab1":   "studentdata",
-		"tab2":   "studentsummary",
-		"action": "form",
-	},
-	"login": {
-		"url":      "https://parents.mtsd.k12.nj.us/genesis/sis/j_security_check",
-		"username": "j_username",
-		"password": "j_password",
-	},
-	"gradebook": {
-		"tab1":      "studentdata",
-		"tab2":      "gradebook",
-		"tab3":      "weeklysummary",
-		"studentid": "",
-		"action":    "form",
-		"mpToView":  "",
-	},
-	"assignments": {
-		"tab1":          "studentdata",
-		"tab2":          "gradebook",
-		"tab3":          "coursesummary",
-		"studentid":     "",
-		"action":        "form",
-		"mpToView":      "",
-		"courseCode":    "",
-		"courseSection": "",
+var ConstantLinks = map[string]map[string]map[string]string{
+	"Montgomery High School": {
+		"base":     {"url": "https://parents.mtsd.k12.nj.us"},
+		"endpoint": {"url": "https://parents.mtsd.k12.nj.us/genesis/parents?"},
+		"home":     {"url": "https://parents.mtsd.k12.nj.us/genesis/sis/view?gohome=true"},
+		"profile": {
+			"tab1":   "studentdata",
+			"tab2":   "studentsummary",
+			"action": "form",
+		},
+		"login": {
+			"url":      "https://parents.mtsd.k12.nj.us/genesis/sis/j_security_check",
+			"username": "j_username",
+			"password": "j_password",
+		},
+		"gradebook": {
+			"tab1":      "studentdata",
+			"tab2":      "gradebook",
+			"tab3":      "weeklysummary",
+			"studentid": "",
+			"action":    "form",
+			"mpToView":  "",
+		},
+		"assignments": {
+			"tab1":          "studentdata",
+			"tab2":          "gradebook",
+			"tab3":          "coursesummary",
+			"studentid":     "",
+			"action":        "form",
+			"mpToView":      "",
+			"courseCode":    "",
+			"courseSection": "",
+		},
 	},
 }
 
@@ -87,6 +89,13 @@ var CourseSummaryNameCategory = "category"
 
 var NotGradedString = "Not Graded"
 var AssignmentPtsString = "Assignment Pts: "
+
+var UsernameFormKey = "email"
+var PasswordFormKey = "password"
+var HighSchoolFormKey = "highschool"
+var UserSelectorFormKey = "user"
+
+var MontgomeryHighSchoolKeyName = "Montgomery High School"
 
 // In Go, you can create a dictionary (also called a map) using the built-in make function. Here's an example:
 
