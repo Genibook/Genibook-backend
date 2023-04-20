@@ -2,6 +2,7 @@ package api_v1
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -22,18 +23,20 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 		}
 		err := r.ParseForm()
 		if err != nil {
-			log.Println(err)
-			log.Println("Error parsing the post data's form :/")
+			utils.APIPrintSpecificError("Error parsing the post data's form :/", w, err, http.StatusInternalServerError)
+			return
 		}
 
 		userSelectorString := r.URL.Query().Get(constants.UserSelectorFormKey)
 		userSelector, err := strconv.Atoi(userSelectorString)
 		if err != nil {
-			// ... handle error
-			log.Println(err)
-			log.Println(userSelectorString)
-			log.Println("Error converting form value with key 'user' to integer^^")
-
+			utils.APIPrintSpecificError("Error converting form value with key 'user' to integer: "+userSelectorString, w, err, http.StatusInternalServerError)
+			return
+		}
+		if userSelector <= 0 {
+			log.Println("Someone tried to use a userselector of <= 0")
+			http.Error(w, "user key is <=0", http.StatusNotAcceptable)
+			return
 		}
 
 		fn(w, r, r.URL.Query().Get(constants.UsernameFormKey), r.URL.Query().Get(constants.PasswordFormKey), r.URL.Query().Get(constants.HighSchoolFormKey), userSelector)
@@ -77,11 +80,24 @@ func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, pass
 	w.Write([]byte(jsonData))
 }
 
-// TODO: update this so that it gets mp and id
+// <note>: userSelector is 1st indexed meaning the first user is 1, second is 2.
+// Backend processes it like that
 func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	mp := r.URL.Query().Get(constants.MPFormKey)
+
 	c, e := utils.InitAndLogin(email, password, highSchool)
 	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
-	weeklySumData := pages.GradebookData(c, 107604, "MP1", highSchool)
+
+	IDS := pages.StudentIdAndCurrMP(c, highSchool)
+
+	if userSelector >= len(IDS) {
+		log.Printf("User selector index >= len(available IDS) Length: %d\n", len(IDS))
+		http.Error(w, fmt.Sprintf("User selector index >= len(available IDS) Length: %d", len(IDS)), http.StatusNotAcceptable)
+		return
+	}
+
+	weeklySumData := pages.GradebookData(c, IDS[userSelector-1], mp, highSchool)
+
 	grades := map[string]map[string]string{}
 	for key := range weeklySumData {
 		oneGrade := weeklySumData[key]
@@ -89,6 +105,7 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 	}
 	jsonData, e := json.Marshal(grades)
 	utils.APIPrintSpecificError("Func GradesHandlerV1: Json Parsing Error", w, e, http.StatusInternalServerError)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(jsonData))
 }

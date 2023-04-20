@@ -15,7 +15,7 @@ func main() {
 	// // assignments := pages.AssignmentsDataForACourse(c, 107604, "MP2", "22000", "2", "US History I")
 	// // for _, assignment := range assignments {
 	// // 	fmt.Println(assignment)
-
+	// fmt.Printf("pages.StudentIdAndCurrMP(c): %v\n", pages.StudentIdAndCurrMP(c, constants.MontgomeryHighSchoolKeyName))
 	// // }
 	//pages.GradebookData(c, 107604, "MP1", constants.MontgomeryHighSchoolKeyName)
 	// assignments_more := pages.ScheduleDataForACourse(c, 107604, "MP2", "22000", "2", "US History I")

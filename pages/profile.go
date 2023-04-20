@@ -140,3 +140,41 @@ func ProfileData(c *colly.Collector, user int, school string) models.Student {
 	// fmt.Println(student.StateID)
 	return student
 }
+
+func StudentIdAndCurrMP(c *colly.Collector, school string) []string {
+	info := make([]string, 0)
+
+	c.OnHTML("body", func(h *colly.HTMLElement) {
+		notecards := h.DOM.Find("table.notecard")
+		notecards.Each(func(i int, notecard *goquery.Selection) {
+			table := notecard.Find("tbody table > tbody")
+			schedule_td := table.Find("tr[valign=\"top\"] > td[valign=\"top\"]:nth-child(2)")
+			top_half := schedule_td.Find("table.list > tbody > tr")
+			top_half.Each(func(i int, tr *goquery.Selection) {
+				if i == 1 {
+					spans := tr.Find("td > span")
+					spans.Each(func(i int, s *goquery.Selection) {
+						if i == 0 {
+							id := utils.CleanAString(s.Text())
+							info = append(info, id)
+						}
+					})
+				}
+			})
+		})
+
+	})
+	profile_url, err := utils.FormatUrl("profile", school)
+	if err != nil {
+		log.Println(err)
+		return info
+	}
+	err = c.Visit(profile_url)
+	if err != nil {
+		log.Println("Couldn't visit profile url, function: StudentIdAndCurrMP, file: profile.go")
+	}
+	c.OnHTMLDetach("body")
+
+	return info
+
+}

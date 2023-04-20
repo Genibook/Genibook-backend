@@ -94,6 +94,7 @@ var UsernameFormKey = "email"
 var PasswordFormKey = "password"
 var HighSchoolFormKey = "highschool"
 var UserSelectorFormKey = "user"
+var MPFormKey = "mp"
 
 var MontgomeryHighSchoolKeyName = "Montgomery High School"
 

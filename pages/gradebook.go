@@ -13,11 +13,11 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func GradebookData(c *colly.Collector, studentId int, mpToView string, school string) map[string]models.OneGrade {
+func GradebookData(c *colly.Collector, studentId string, mpToView string, school string) map[string]models.OneGrade {
 	grades := map[string]models.OneGrade{}
 
 	data := constants.ConstantLinks[school]["gradebook"]
-	data["studentid"] = strconv.Itoa(studentId)
+	data["studentid"] = studentId
 	data["mpToView"] = mpToView
 	gradebook_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
