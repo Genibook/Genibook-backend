@@ -109,7 +109,7 @@ func GimmeCourseCodes(c *colly.Collector, studentId int, mpToView string, school
 						courseCodeNode := s.Find("tbody>tr>td:nth-child(1)")
 						onclick, err := courseCodeNode.Attr("onclick")
 						if !err {
-							log.Println(fmt.Sprintf("Course on index %d does not have onclick attr", k))
+							log.Printf("Course on index %d does not have onclick attr\n", k)
 						}
 						onclick = strings.ReplaceAll(strings.ReplaceAll(onclick, "goToCourseSummary(", ""), ");", "")
 
