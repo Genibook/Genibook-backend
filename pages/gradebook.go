@@ -87,7 +87,7 @@ func GradebookData(c *colly.Collector, studentId string, mpToView string, school
 
 }
 
-func GimmeCourseCodes(c *colly.Collector, studentId int, mpToView string, school string) map[string]map[string]string {
+func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, school string) map[string]map[string]string {
 	courseCodes := map[string]map[string]string{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
@@ -124,7 +124,7 @@ func GimmeCourseCodes(c *colly.Collector, studentId int, mpToView string, school
 	})
 
 	data := constants.ConstantLinks[school]["gradebook"]
-	data["studentid"] = strconv.Itoa(studentId)
+	data["studentid"] = studentId
 	data["mpToView"] = mpToView
 	gradebook_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {

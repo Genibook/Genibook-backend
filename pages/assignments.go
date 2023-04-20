@@ -2,7 +2,6 @@ package pages
 
 import (
 	"log"
-	"strconv"
 	"strings"
 	"webscrapper/constants"
 	"webscrapper/models"
@@ -12,11 +11,11 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView string, courseCode string, courseSection string, courseName string, school string) []models.Assignment {
+func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) []models.Assignment {
 	assignments := make([]models.Assignment, 0)
 
 	data := constants.ConstantLinks[school]["assignments"]
-	data["studentid"] = strconv.Itoa(studentId)
+	data["studentid"] = studentId
 	data["mpToView"] = mpToView
 	data["courseCode"] = courseCode
 	data["courseSection"] = courseSection
@@ -92,11 +91,11 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 	return assignments
 }
 
-func ScheduleDataForACourse(c *colly.Collector, studentId int, mpToView string, courseCode string, courseSection string, courseName string, school string) []models.ScheduleAssignment {
+func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) []models.ScheduleAssignment {
 	assignments := make([]models.ScheduleAssignment, 0)
 
 	data := constants.ConstantLinks[school]["assignments"]
-	data["studentid"] = strconv.Itoa(studentId)
+	data["studentid"] = studentId
 	data["mpToView"] = mpToView
 	data["courseCode"] = courseCode
 	data["courseSection"] = courseSection

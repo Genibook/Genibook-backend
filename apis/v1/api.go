@@ -2,18 +2,17 @@ package api_v1
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"regexp"
 	"strconv"
-	"strings"
 	"webscrapper/constants"
+	"webscrapper/models"
 	"webscrapper/pages"
 	"webscrapper/utils"
 )
 
-var validPath = regexp.MustCompile("^/(edit|login|profile|grades|)/")
+var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments)/")
 
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -96,22 +95,16 @@ func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, pass
 // <note>: userSelector is 1st indexed meaning the first user is 1, second is 2.
 // Backend processes it like that
 func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	mp := r.URL.Query().Get(constants.MPFormKey)
-
-	if !strings.Contains(mp, "MP") {
-		log.Println("Marking Period Not Valid: " + mp)
-		http.Error(w, "Marking Period Not Valid: "+mp, http.StatusNotAcceptable)
+	mp, err := GetMP(w, r)
+	if err != nil {
 		return
 	}
 
 	c, e := utils.InitAndLogin(email, password, highSchool)
 	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
 
-	IDS := pages.StudentIdAndCurrMP(c, highSchool)
-
-	if userSelector > len(IDS) {
-		log.Printf("User selector index >= len(available IDS) Length: %d\n", len(IDS))
-		http.Error(w, fmt.Sprintf("User selector index >= len(available IDS) Length: %d", len(IDS)), http.StatusNotAcceptable)
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
 		return
 	}
 
@@ -130,8 +123,31 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 }
 
 func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	mp := r.URL.Query().Get(constants.MPFormKey)
-	fmt.Println(pages.GimmeCourseCodes(c, 107604, mp))
+	courseAssignments := map[string][]models.Assignment{}
+	mp, err := GetMP(w, r)
+	if err != nil {
+		return
+	}
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError("Func GradesHandlerV1: Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return
+	}
+	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	//fmt.Println(pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool))
+	for courseName := range codesAndSections {
+		aCoursesDict := codesAndSections[courseName]
+		aCoursesAssignments := pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		courseAssignments[courseName] = aCoursesAssignments
+	}
+	jsonData, e := json.Marshal(courseAssignments)
+	utils.APIPrintSpecificError("Func AssignmentHandlerV1: Json Parsing Error", w, e, http.StatusInternalServerError)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(jsonData))
+
 }
 
 // func ScheduleHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int){
