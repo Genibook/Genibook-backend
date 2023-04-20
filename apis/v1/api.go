@@ -6,8 +6,6 @@ import (
 	"regexp"
 	"strconv"
 	"webscrapper/constants"
-	"webscrapper/models"
-	"webscrapper/pages"
 	"webscrapper/utils"
 )
 
@@ -107,53 +105,25 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 }
 
 func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	courseAssignments := map[string][]models.Assignment{}
-	mp, err := GetMP(w, r)
-	if err != nil {
-		return
-	}
 
 	functionName := "Func AssignmentHandlerV1"
 
-	c, e := utils.InitAndLogin(email, password, highSchool)
-	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
-
-	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	assignments, err := GetAssignments(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		return
 	}
-	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
-	//fmt.Println(pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool))
-	for courseName := range codesAndSections {
-		aCoursesDict := codesAndSections[courseName]
-		aCoursesAssignments := pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
-		courseAssignments[courseName] = aCoursesAssignments
-	}
-	ReturnJsonData(courseAssignments, w, functionName+": Json Parsing Error")
+
+	ReturnJsonData(assignments, w, functionName+": Json Parsing Error")
 
 }
 
 func ScheduleAssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	scheduleAssignments := map[string][]models.ScheduleAssignment{}
-	mp, err := GetMP(w, r)
-	if err != nil {
-		return
-	}
 
 	functionName := "Func ScheduleAssignmentHandlerV1"
 
-	c, e := utils.InitAndLogin(email, password, highSchool)
-	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
-
-	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	scheduleAssignments, err := GetSchedule(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		return
-	}
-	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
-	for courseName := range codesAndSections {
-		aCoursesDict := codesAndSections[courseName]
-		aScheduleAssignments := pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
-		scheduleAssignments[courseName] = aScheduleAssignments
 	}
 
 	ReturnJsonData(scheduleAssignments, w, functionName+": Json Parsing Error")

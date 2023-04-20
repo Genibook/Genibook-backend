@@ -81,3 +81,52 @@ func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, emai
 	return grades, nil
 
 }
+
+func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string][]models.Assignment, error) {
+	courseAssignments := map[string][]models.Assignment{}
+	mp, err := GetMP(w, r)
+	if err != nil {
+		return courseAssignments, err
+	}
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return courseAssignments, err
+	}
+	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	//fmt.Println(pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool))
+	for courseName := range codesAndSections {
+		aCoursesDict := codesAndSections[courseName]
+		aCoursesAssignments := pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		courseAssignments[courseName] = aCoursesAssignments
+	}
+
+	return courseAssignments, nil
+}
+
+func GetSchedule(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string][]models.ScheduleAssignment, error) {
+	scheduleAssignments := map[string][]models.ScheduleAssignment{}
+	mp, err := GetMP(w, r)
+	if err != nil {
+		return scheduleAssignments, err
+	}
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return scheduleAssignments, err
+	}
+	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	for courseName := range codesAndSections {
+		aCoursesDict := codesAndSections[courseName]
+		aScheduleAssignments := pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		scheduleAssignments[courseName] = aScheduleAssignments
+	}
+
+	return scheduleAssignments, nil
+}
