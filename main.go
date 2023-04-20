@@ -7,15 +7,10 @@ import (
 )
 
 func main() {
-	// c, e := utils.Init_colly()
-	// if e != nil {
-	// 	log.Fatal("error initing colly scrapper")
-	// 	log.Fatal(e)
-	// 	return
-	// }
+	// c := utils.Init_colly()
 	// utils.DebugLogin(c)
-	// // student := pages.ProfileData(c, 1)
-	// // fmt.Printf("student: %v\n", student)
+	// student := pages.ProfileData(c, 1, constants.MontgomeryHighSchoolKeyName)
+	// fmt.Printf("student: %v\n", student)
 	// //pages.ProfileData(c, 1)
 	// //pages.GimmeCourseCodes(c, 107604, "MP1")
 	// // assignments := pages.AssignmentsDataForACourse(c, 107604, "MP2", "22000", "2", "US History I")

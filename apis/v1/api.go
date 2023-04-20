@@ -11,7 +11,7 @@ import (
 	"webscrapper/utils"
 )
 
-var validPath = regexp.MustCompile("^/(edit|login|)/")
+var validPath = regexp.MustCompile("^/(edit|login|profile)/")
 
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +25,6 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 			log.Println(err)
 			log.Println("Error parsing the post data's form :/")
 		}
-		fmt.Println(m)
 
 		userSelectorString := r.URL.Query().Get(constants.UserSelectorFormKey)
 		userSelector, err := strconv.Atoi(userSelectorString)
