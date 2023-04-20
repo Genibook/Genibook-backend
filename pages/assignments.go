@@ -92,7 +92,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId int, mpToView strin
 	return assignments
 }
 
-func AssignmentsDataForSchedule(c *colly.Collector, studentId int, mpToView string, courseCode string, courseSection string, courseName string) []models.ScheduleAssignment {
+func ScheduleDataForACourse(c *colly.Collector, studentId int, mpToView string, courseCode string, courseSection string, courseName string) []models.ScheduleAssignment {
 	assignments := make([]models.ScheduleAssignment, 0)
 
 	data := constants.ConstantLinks["assignments"]
@@ -111,32 +111,44 @@ func AssignmentsDataForSchedule(c *colly.Collector, studentId int, mpToView stri
 		rows := dom.Find(".list > tbody>tr")
 		rows.Each(func(i int, row *goquery.Selection) {
 			if row.Children().Length() == constants.CourseSummaryRowLength && i != 1 {
-				aAssignment := models.ScheduleAssignment{
-					CourseName:  "",
-					Category:    "",
-					Assignment:  "",
-					Description: "",
-					Date:        "",
-					Points:      "",
-				}
+				notGraded := false
 				tds := row.Children()
-
-				stuff := utils.BasicDataExtractor(row, courseName)
-				aAssignment.Category = stuff[constants.CourseSummaryNameCategory]
-				aAssignment.Assignment = stuff[constants.CourseSummaryNameAssignment]
-				aAssignment.Description = stuff[constants.CourseSummaryNameDescription]
-				aAssignment.CourseName = courseName
-
 				tds.Each(func(i int, s *goquery.Selection) {
-					if i == constants.CourseSummaryDueIndex {
-						_, date := utils.ProcessDueCell(s)
-						aAssignment.Date = strings.TrimSpace(date)
-					} else if i == constants.CourseSummaryGradeIndex {
-						aAssignment.Points = utils.ProcessGradeCellForSchedule(s)
+
+					if i == constants.CourseSummaryGradeIndex {
+						_, notGraded = utils.ProcessGradeCellForSchedule(s)
+
 					}
 				})
 
-				assignments = append(assignments, aAssignment)
+				if notGraded {
+					aAssignment := models.ScheduleAssignment{
+						CourseName:  "",
+						Category:    "",
+						Assignment:  "",
+						Description: "",
+						Date:        "",
+						Points:      "",
+					}
+
+					stuff := utils.BasicDataExtractor(row, courseName)
+					aAssignment.Category = stuff[constants.CourseSummaryNameCategory]
+					aAssignment.Assignment = stuff[constants.CourseSummaryNameAssignment]
+					aAssignment.Description = stuff[constants.CourseSummaryNameDescription]
+					aAssignment.CourseName = courseName
+
+					tds.Each(func(i int, s *goquery.Selection) {
+						if i == constants.CourseSummaryDueIndex {
+							_, date := utils.ProcessDueCell(s)
+							aAssignment.Date = strings.TrimSpace(date)
+						} else if i == constants.CourseSummaryGradeIndex {
+							aAssignment.Points, _ = utils.ProcessGradeCellForSchedule(s)
+						}
+					})
+
+					assignments = append(assignments, aAssignment)
+				}
+
 			}
 		})
 

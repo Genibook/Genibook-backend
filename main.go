@@ -18,11 +18,17 @@ func main() {
 	// fmt.Printf("student: %v\n", student)
 	//pages.ProfileData(c, 1)
 	//pages.GimmeCourseCodes(c, 107604, "MP1")
-	assignments := pages.AssignmentsDataForACourse(c, 107604, "MP2", "22000", "2", "US History I")
-	for _, assignment := range assignments {
+	// assignments := pages.AssignmentsDataForACourse(c, 107604, "MP2", "22000", "2", "US History I")
+	// for _, assignment := range assignments {
+	// 	fmt.Println(assignment)
+
+	// }
+	assignments_more := pages.ScheduleDataForACourse(c, 107604, "MP2", "22000", "2", "US History I")
+	for _, assignment := range assignments_more {
 		fmt.Println(assignment)
 
 	}
+
 	//pages.GradebookData(c, 107604, "MP1")
 
 }

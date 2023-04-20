@@ -120,8 +120,9 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 	return gradeNum, gradePercent
 }
 
-func ProcessGradeCellForSchedule(s *goquery.Selection) string {
+func ProcessGradeCellForSchedule(s *goquery.Selection) (string, bool) {
 	gradePoints := ""
+	notGraded := false
 
 	divs := s.Find("div")
 	lenDivs := divs.Length()
@@ -133,6 +134,7 @@ func ProcessGradeCellForSchedule(s *goquery.Selection) string {
 			subDivs.Each(func(i int, s *goquery.Selection) {
 				if i == 1 {
 					gradePoints = strings.ReplaceAll(CleanAString(s.Text()), constants.AssignmentPtsString, "")
+					notGraded = true
 				}
 			})
 
@@ -140,7 +142,7 @@ func ProcessGradeCellForSchedule(s *goquery.Selection) string {
 
 	}
 
-	return gradePoints
+	return gradePoints, notGraded
 }
 
 func ProcessDueCell(s *goquery.Selection) (dayname string, date string) {
