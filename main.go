@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
 
 	r.POST("/hi/", func(c *gin.Context) {
@@ -23,6 +24,8 @@ func main() {
 	r.POST("/grades/", api_v1.MakeHandler(api_v1.GradesHandlerV1))
 	r.POST("/profile/", api_v1.MakeHandler(api_v1.ProfileHandlerV1))
 	r.POST("/login/", api_v1.MakeHandler(api_v1.LoginHandlerV1))
-	log.Fatal(http.ListenAndServe(":6969", nil))
+
+	log.Fatal(r.Run(":6969"))
+	//log.Fatal(http.ListenAndServe(":6969", nil))
 
 }
