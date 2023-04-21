@@ -16,6 +16,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
+
 	})
 
 	r.POST("/student/", api_v1.MakeHandler(api_v1.StudentHandlerV1))

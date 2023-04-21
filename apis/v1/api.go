@@ -1,7 +1,6 @@
 package api_v1
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -18,7 +17,6 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 	return func(c *gin.Context) {
 		w := c.Writer
 		r := c.Request
-		fmt.Println(r.URL.Path)
 		//, w http.ResponseWriter, r *http.Request
 
 		m := validPath.Find([]byte(r.URL.Path))
