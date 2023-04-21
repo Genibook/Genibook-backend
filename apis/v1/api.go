@@ -30,7 +30,7 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 			return
 		}
 
-		userSelectorString := r.URL.Query().Get(constants.UserSelectorFormKey)
+		userSelectorString := c.Query(constants.UserSelectorFormKey)
 		userSelector, err := strconv.Atoi(userSelectorString)
 		if err != nil {
 			utils.APIPrintSpecificError("Error converting form value with key 'user' to integer: "+userSelectorString, w, err, http.StatusInternalServerError)
@@ -41,7 +41,7 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 			http.Error(w, "user key is <=0", http.StatusNotAcceptable)
 			return
 		}
-		key := r.URL.Query().Get(constants.HighSchoolFormKey)
+		key := c.Query(constants.HighSchoolFormKey)
 		kValid := false
 		for k := range constants.ConstantLinks {
 			if k == key {
@@ -54,7 +54,7 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 			return
 		}
 
-		fn(c, w, r, r.URL.Query().Get(constants.UsernameFormKey), r.URL.Query().Get(constants.PasswordFormKey), key, userSelector)
+		fn(c, w, r, c.Query(constants.UsernameFormKey), c.Query(constants.PasswordFormKey), key, userSelector)
 	}
 }
 
@@ -92,6 +92,7 @@ func ProfileHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, em
 	if err != nil {
 		return
 	}
+
 	c.JSON(http.StatusOK, student)
 }
 
