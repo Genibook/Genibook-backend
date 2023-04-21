@@ -3,7 +3,6 @@ package api_v1
 import (
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 	"webscrapper/constants"
 	"webscrapper/utils"
@@ -11,19 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments|schedule|student)/")
+// var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments|schedule|student)/")
 
 func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, string, string, string, int)) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		w := c.Writer
 		r := c.Request
 		//, w http.ResponseWriter, r *http.Request
-
-		m := validPath.Find([]byte(r.URL.Path))
-		if m == nil {
-			http.NotFound(w, r)
-			return
-		}
 		err := r.ParseForm()
 		if err != nil {
 			utils.APIPrintSpecificError("Error parsing the post data's form :/", w, err, http.StatusInternalServerError)
