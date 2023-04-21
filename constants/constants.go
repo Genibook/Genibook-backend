@@ -98,6 +98,8 @@ var MPFormKey = "mp"
 
 var MontgomeryHighSchoolKeyName = "Montgomery High School"
 
+var ScheduleAssignmentsName = "scheduleAssignments"
+
 // In Go, you can create a dictionary (also called a map) using the built-in make function. Here's an example:
 
 // go

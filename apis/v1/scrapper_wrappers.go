@@ -108,7 +108,9 @@ func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string,
 }
 
 func GetSchedule(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string][]models.ScheduleAssignment, error) {
-	scheduleAssignments := map[string][]models.ScheduleAssignment{}
+	scheduleAssignments := map[string][]models.ScheduleAssignment{
+		constants.ScheduleAssignmentsName: make([]models.ScheduleAssignment, 0),
+	}
 	mp, err := GetMP(w, r)
 	if err != nil {
 		return scheduleAssignments, err
@@ -125,7 +127,8 @@ func GetSchedule(w http.ResponseWriter, r *http.Request, functionName string, em
 	for courseName := range codesAndSections {
 		aCoursesDict := codesAndSections[courseName]
 		aScheduleAssignments := pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
-		scheduleAssignments[courseName] = aScheduleAssignments
+		// scheduleAssignments[courseName] = aScheduleAssignments
+		scheduleAssignments[constants.ScheduleAssignmentsName] = append(scheduleAssignments[constants.ScheduleAssignmentsName], aScheduleAssignments...)
 	}
 
 	return scheduleAssignments, nil
