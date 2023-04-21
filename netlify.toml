@@ -1,9 +1,0 @@
-[build]
-  command = "./main"
-  publish = "."
-
-[[redirects]]
-  from = "/api/*"
-  to = "http://localhost:6969/:splat"
-  status = 200
-  force = true
