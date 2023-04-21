@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	r.POST("/hi/", func(c *gin.Context) {

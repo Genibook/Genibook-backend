@@ -13,7 +13,7 @@ import (
 
 var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments|schedule|student)/")
 
-func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) func(c *gin.Context) {
+func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, string, string, string, int)) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		w := c.Writer
 		r := c.Request
@@ -54,11 +54,11 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, str
 			return
 		}
 
-		fn(w, r, r.URL.Query().Get(constants.UsernameFormKey), r.URL.Query().Get(constants.PasswordFormKey), key, userSelector)
+		fn(c, w, r, r.URL.Query().Get(constants.UsernameFormKey), r.URL.Query().Get(constants.PasswordFormKey), key, userSelector)
 	}
 }
 
-func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+func LoginHandlerV1(context *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	c := utils.Init_colly()
 	e := utils.Login(c, email, password, highSchool)
 
@@ -85,20 +85,19 @@ func LoginHandlerV1(w http.ResponseWriter, r *http.Request, email string, passwo
 	// w.Write(jsonData)
 }
 
-func ProfileHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+func ProfileHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	functionName := "Func ProfileHandlerV1"
 
 	student, err := GetProfile(w, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		return
 	}
-
-	ReturnJsonData(student, w, functionName+": Json Parsing Error")
+	c.JSON(http.StatusOK, student)
 }
 
 // <note>: userSelector is 1st indexed meaning the first user is 1, second is 2.
 // Backend processes it like that
-func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+func GradesHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 
 	functionName := "Func GradesHandlerV1"
 
@@ -106,11 +105,11 @@ func GradesHandlerV1(w http.ResponseWriter, r *http.Request, email string, passw
 	if err != nil {
 		return
 	}
+	c.JSON(http.StatusOK, grades)
 
-	ReturnJsonData(grades, w, functionName+": Json Parsing Error")
 }
 
-func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+func AssignmentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 
 	functionName := "Func AssignmentHandlerV1"
 
@@ -118,12 +117,11 @@ func AssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, p
 	if err != nil {
 		return
 	}
-
-	ReturnJsonData(assignments, w, functionName+": Json Parsing Error")
+	c.JSON(http.StatusOK, assignments)
 
 }
 
-func ScheduleAssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+func ScheduleAssignmentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 
 	functionName := "Func ScheduleAssignmentHandlerV1"
 
@@ -132,11 +130,10 @@ func ScheduleAssignmentHandlerV1(w http.ResponseWriter, r *http.Request, email s
 		return
 	}
 
-	ReturnJsonData(scheduleAssignments, w, functionName+": Json Parsing Error")
-
+	c.JSON(http.StatusOK, scheduleAssignments)
 }
 
-func StudentHandlerV1(w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+func StudentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 
 	functionName := "Func StudentHandlerV1"
 
@@ -156,6 +153,7 @@ func StudentHandlerV1(w http.ResponseWriter, r *http.Request, email string, pass
 	}
 
 	ret := CombineGradeAssiandProfile(assignments, grades, student)
-	ReturnJsonData(ret, w, functionName+": Json Parsing Error")
+
+	c.JSON(http.StatusOK, ret)
 
 }
