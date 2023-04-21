@@ -7,12 +7,18 @@ import (
 	"strconv"
 	"webscrapper/constants"
 	"webscrapper/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 var validPath = regexp.MustCompile("^/(edit|login|profile|grades|assignments|schedule|student)/")
 
-func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func MakeHandler(fn func(http.ResponseWriter, *http.Request, string, string, string, int)) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		w := c.Writer
+		r := c.Request
+		//, w http.ResponseWriter, r *http.Request
+
 		m := validPath.Find([]byte(r.URL.Path))
 		if m == nil {
 			http.NotFound(w, r)
