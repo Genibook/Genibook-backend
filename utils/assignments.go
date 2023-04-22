@@ -89,11 +89,12 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 		subDivs := divs.Find("div")
 		if subDivs.Length() == constants.GradeCellThatIsJustNormaSubDivCount {
 			//normal cell
-			gradePercent = CleanAString(divs.Text())
+			gradePercent = strings.ReplaceAll(CleanAString(divs.Text()), "%", "")
 		} else {
 			// ungraded cell
 			subDivs.Each(func(i int, s *goquery.Selection) {
 				if i == 1 {
+
 					gradeNum = constants.NotGradedString
 					gradePoints := CleanAString(s.Text())
 
@@ -105,6 +106,18 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 
 	} else if lenDivs == 2 {
 		//sussy eetash cell
+
+		//also like these r the stuff for like excempts and stuff
+
+		/*
+			e.g.
+			<div>
+			<span>
+			exempt
+			</span>
+			</div>
+			<div> assign points = 5 </div>
+		*/
 		divs.Each(func(i int, s *goquery.Selection) {
 			if i == 0 {
 				x_modifier := CleanAString(s.Find("span").Text())

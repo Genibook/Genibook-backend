@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"fmt"
 	"log"
 	"strings"
 	"webscrapper/constants"
@@ -21,7 +20,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	data["courseCode"] = courseCode
 	data["courseSection"] = courseSection
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
+	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
 	if err != nil {
 		log.Println(err)
 		return assignments
@@ -90,7 +89,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	}
 	c.OnHTMLDetach("body")
 
-	fmt.Println(assignments)
+	//fmt.Println(assignments)
 
 	return assignments
 }
