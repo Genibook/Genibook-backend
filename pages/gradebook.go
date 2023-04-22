@@ -115,7 +115,7 @@ func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, sch
 
 						data := strings.Split(onclick, ",")
 
-						courseCodes[courseName] = map[string]string{"code": data[0], "section": data[1]}
+						courseCodes[courseName] = map[string]string{"code": strings.ReplaceAll(data[0], "'", ""), "section": strings.ReplaceAll(data[1], "'", "")}
 					}
 				})
 

@@ -97,10 +97,11 @@ func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string,
 		return courseAssignments, err
 	}
 	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	aCoursesAssignments := make([]models.Assignment, 0)
 	//fmt.Println(pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool))
 	for courseName := range codesAndSections {
 		aCoursesDict := codesAndSections[courseName]
-		aCoursesAssignments := pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		aCoursesAssignments = pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
 		courseAssignments[courseName] = aCoursesAssignments
 	}
 
