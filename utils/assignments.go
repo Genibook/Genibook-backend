@@ -127,6 +127,11 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 				gradePercent = strings.ReplaceAll(CleanAString(s.Text()), "%", "")
 			}
 		})
+		if strings.Contains(gradeNum, "Exempt") || strings.Contains(gradeNum, "Absent") || strings.Contains(gradeNum, "Missing") || strings.Contains(gradeNum, "Incomplete") {
+			gradeNum = strings.TrimSpace(gradeNum)
+			gradePercent = CleanAString(strings.ReplaceAll(strings.ReplaceAll(CleanAString(s.Text()), constants.AssignmentPtsString, ""), gradeNum, ""))
+
+		}
 
 	}
 
