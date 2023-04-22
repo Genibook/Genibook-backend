@@ -90,7 +90,7 @@ var CourseSummaryNameCategory = "category"
 var NotGradedString = "Not Graded"
 var AssignmentPtsString = "Assignment Pts: "
 
-var UsernameFormKey = "email"
+var UsernameFormKey = "username"
 var PasswordFormKey = "password"
 var HighSchoolFormKey = "highschool"
 var UserSelectorFormKey = "user"
