@@ -24,7 +24,10 @@ func GetMP(w http.ResponseWriter, r *http.Request) (string, error) {
 }
 
 func GetIDs(userSelector int, c *colly.Collector, highSchool string, w http.ResponseWriter) ([]string, error) {
-	IDS := pages.StudentIdAndCurrMP(c, highSchool)
+	IDS, err := pages.StudentIds(c, highSchool)
+	if err != nil {
+		return make([]string, 0), err
+	}
 	if userSelector > len(IDS) {
 		log.Printf("User selector index > len(available IDS) Length: %d\n", len(IDS))
 		http.Error(w, fmt.Sprintf("User selector index > len(available IDS) Length: %d", len(IDS)), http.StatusNotAcceptable)
@@ -52,8 +55,12 @@ func GetProfile(w http.ResponseWriter, functionName string, email string, passwo
 			Image64:       "N/A",
 		}, e
 	}
+	profile, err := pages.ProfileData(c, userSelector, highSchool)
+	if err != nil {
+		return profile, err
+	}
 
-	return pages.ProfileData(c, userSelector, highSchool), nil
+	return profile, nil
 }
 
 func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string]map[string]string, error) {
@@ -71,7 +78,10 @@ func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, emai
 		return grades, err
 	}
 
-	weeklySumData := pages.GradebookData(c, IDS[userSelector-1], mp, highSchool)
+	weeklySumData, err := pages.GradebookData(c, IDS[userSelector-1], mp, highSchool)
+	if err != nil {
+		return grades, err
+	}
 
 	for key := range weeklySumData {
 		oneGrade := weeklySumData[key]
@@ -96,12 +106,18 @@ func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string,
 	if err != nil {
 		return courseAssignments, err
 	}
-	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	codesAndSections, err := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	if err != nil {
+		return courseAssignments, err
+	}
 	aCoursesAssignments := make([]models.Assignment, 0)
 	//fmt.Println(pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool))
 	for courseName := range codesAndSections {
 		aCoursesDict := codesAndSections[courseName]
-		aCoursesAssignments = pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		aCoursesAssignments, err = pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		if err != nil {
+			return courseAssignments, err
+		}
 		courseAssignments[courseName] = aCoursesAssignments
 	}
 
@@ -124,10 +140,16 @@ func GetSchedule(w http.ResponseWriter, r *http.Request, functionName string, em
 	if err != nil {
 		return scheduleAssignments, err
 	}
-	codesAndSections := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	codesAndSections, err := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	if err != nil {
+		return scheduleAssignments, err
+	}
 	for courseName := range codesAndSections {
 		aCoursesDict := codesAndSections[courseName]
-		aScheduleAssignments := pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		aScheduleAssignments, err := pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		if err != nil {
+			return scheduleAssignments, err
+		}
 		// scheduleAssignments[courseName] = aScheduleAssignments
 		scheduleAssignments[constants.ScheduleAssignmentsName] = append(scheduleAssignments[constants.ScheduleAssignmentsName], aScheduleAssignments...)
 	}

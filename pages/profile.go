@@ -13,7 +13,7 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func ProfileData(c *colly.Collector, user int, school string) models.Student {
+func ProfileData(c *colly.Collector, user int, school string) (models.Student, error) {
 	exists_an_image := false
 
 	student := models.Student{
@@ -115,11 +115,12 @@ func ProfileData(c *colly.Collector, user int, school string) models.Student {
 	profile_url, err := utils.FormatUrl("profile", school)
 	if err != nil {
 		log.Println(err)
-		return student
+		return student, err
 	}
 	err = c.Visit(profile_url)
 	if err != nil {
 		log.Println("Couldn't visit profile url, function: ProfileData, file: profile.go")
+		return student, err
 	}
 	c.OnHTMLDetach("body")
 
@@ -138,10 +139,10 @@ func ProfileData(c *colly.Collector, user int, school string) models.Student {
 	// fmt.Println(student.ID)
 	// fmt.Println(student.Grade)
 	// fmt.Println(student.StateID)
-	return student
+	return student, nil
 }
 
-func StudentIdAndCurrMP(c *colly.Collector, school string) []string {
+func StudentIds(c *colly.Collector, school string) ([]string, error) {
 	info := make([]string, 0)
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
@@ -167,7 +168,7 @@ func StudentIdAndCurrMP(c *colly.Collector, school string) []string {
 	profile_url, err := utils.FormatUrl("profile", school)
 	if err != nil {
 		log.Println(err)
-		return info
+		return info, err
 	}
 	err = c.Visit(profile_url)
 	if err != nil {
@@ -175,6 +176,6 @@ func StudentIdAndCurrMP(c *colly.Collector, school string) []string {
 	}
 	c.OnHTMLDetach("body")
 
-	return info
+	return info, err
 
 }

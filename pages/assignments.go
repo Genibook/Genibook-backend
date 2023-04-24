@@ -11,7 +11,7 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) []models.Assignment {
+func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) ([]models.Assignment, error) {
 	assignments := make([]models.Assignment, 0)
 
 	data := constants.ConstantLinks[school]["assignments"]
@@ -23,7 +23,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
 	if err != nil {
 		log.Println(err)
-		return assignments
+		return assignments, err
 
 	}
 
@@ -86,15 +86,16 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	err = c.Visit(assignemnts_url)
 	if err != nil {
 		log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
+		return assignments, err
 	}
 	c.OnHTMLDetach("body")
 
 	//fmt.Println(assignments)
 
-	return assignments
+	return assignments, nil
 }
 
-func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) []models.ScheduleAssignment {
+func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) ([]models.ScheduleAssignment, error) {
 	assignments := make([]models.ScheduleAssignment, 0)
 
 	data := constants.ConstantLinks[school]["assignments"]
@@ -104,8 +105,7 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 	data["courseSection"] = courseSection
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
-		log.Println(err)
-		return assignments
+		return assignments, err
 	}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
@@ -159,8 +159,9 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 	err = c.Visit(assignemnts_url)
 	if err != nil {
 		log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
+		return assignments, err
 	}
 	c.OnHTMLDetach("body")
 
-	return assignments
+	return assignments, err
 }

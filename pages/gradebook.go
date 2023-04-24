@@ -13,18 +13,8 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func GradebookData(c *colly.Collector, studentId string, mpToView string, school string) map[string]models.OneGrade {
+func GradebookData(c *colly.Collector, studentId string, mpToView string, school string) (map[string]models.OneGrade, error) {
 	grades := map[string]models.OneGrade{}
-
-	data := constants.ConstantLinks[school]["gradebook"]
-	data["studentid"] = studentId
-	data["mpToView"] = mpToView
-	gradebook_url, err := utils.FormatDynamicUrl(data, school)
-	if err != nil {
-		log.Println(err)
-		return grades
-
-	}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
@@ -77,17 +67,28 @@ func GradebookData(c *colly.Collector, studentId string, mpToView string, school
 		})
 	})
 
+	data := constants.ConstantLinks[school]["gradebook"]
+	data["studentid"] = studentId
+	data["mpToView"] = mpToView
+	gradebook_url, err := utils.FormatDynamicUrl(data, school)
+	if err != nil {
+		log.Println(err)
+		return grades, err
+
+	}
+
 	err = c.Visit(gradebook_url)
 	if err != nil {
 		log.Println("Couldn't visit gradebook url: function GradebookData, file gradebook.go")
+		return grades, err
 	}
 	c.OnHTMLDetach("body")
 
-	return grades
+	return grades, nil
 
 }
 
-func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, school string) map[string]map[string]string {
+func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, school string) (map[string]map[string]string, error) {
 	courseCodes := map[string]map[string]string{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
@@ -129,17 +130,50 @@ func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, sch
 	gradebook_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
 		log.Println(err)
-		return courseCodes
+		return courseCodes, err
 
 	}
 
 	err = c.Visit(gradebook_url)
 	if err != nil {
 		log.Println("Couldn't visit gradebook url: function gimmeCourseCodes,  file gradebook.go")
+		return courseCodes, err
 	}
 	c.OnHTMLDetach("body")
 
-	return courseCodes
+	return courseCodes, nil
+}
+
+func GimmeMPs(c *colly.Collector, studentId string, school string) ([]string, error) {
+	mps := make([]string, 0)
+
+	c.OnHTML("body", func(h *colly.HTMLElement) {
+		dom := h.DOM
+		selector := dom.Find("select.fieldvalue")
+		selector.Children().Each(func(i int, s *goquery.Selection) {
+			mp := utils.CleanAString(s.Text())
+			mps = append(mps, mp)
+		})
+	})
+
+	data := constants.ConstantLinks[school]["gradebook"]
+	data["studentid"] = studentId
+	data["mpToView"] = "MP1"
+
+	gradebook_url, err := utils.FormatDynamicUrl(data, school)
+	if err != nil {
+		log.Println(err)
+		return mps, err
+	}
+
+	err = c.Visit(gradebook_url)
+	if err != nil {
+		log.Println("Couldn't visit gradebook url: function GimmeMps,  file gradebook.go")
+		return mps, err
+	}
+	c.OnHTMLDetach("body")
+
+	return mps, nil
 }
 
 // final grades = Grades.fromJson({

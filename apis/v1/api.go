@@ -83,6 +83,7 @@ func ProfileHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, em
 
 	student, err := GetProfile(w, functionName, email, password, highSchool, userSelector)
 	if err != nil {
+		utils.APIPrintSpecificError("[ProfileHandler] GetProfile error", w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -97,6 +98,7 @@ func GradesHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, ema
 
 	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
+		utils.APIPrintSpecificError("[GradesHandler]  GetGrades error", w, err, http.StatusInternalServerError)
 		return
 	}
 	c.JSON(http.StatusOK, grades)
@@ -109,6 +111,7 @@ func AssignmentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request,
 
 	assignments, err := GetAssignments(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
+		utils.APIPrintSpecificError("[Assignmenthandler] GetAssignments error", w, err, http.StatusInternalServerError)
 		return
 	}
 	c.JSON(http.StatusOK, assignments)
@@ -121,6 +124,7 @@ func ScheduleAssignmentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.
 
 	scheduleAssignments, err := GetSchedule(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
+		utils.APIPrintSpecificError("[ScheduleAssignmentHandlerV1]  GetSchedule error", w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -133,21 +137,28 @@ func StudentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, em
 
 	student, err := GetProfile(w, functionName, email, password, highSchool, userSelector)
 	if err != nil {
+		utils.APIPrintSpecificError("[StudentHandlerV1]  GetProfile error", w, err, http.StatusInternalServerError)
 		return
 	}
 
 	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
+		utils.APIPrintSpecificError("[StudentHandlerV1]  GetGrades error", w, err, http.StatusInternalServerError)
 		return
 	}
 
 	assignments, err := GetAssignments(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
+		utils.APIPrintSpecificError("[StudentHandlerV1]  GetAssignments error", w, err, http.StatusInternalServerError)
 		return
 	}
 
 	ret := CombineGradeAssiandProfile(assignments, grades, student)
 
 	c.JSON(http.StatusOK, ret)
+
+}
+
+func MpsHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 
 }

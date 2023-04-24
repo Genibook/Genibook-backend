@@ -11,6 +11,7 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	//r.Use(api_v1.JsonLoggerMiddleware())
 
 	r.POST("/hi/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -19,6 +20,7 @@ func main() {
 
 	})
 
+	r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))
 	r.POST("/apiv1/student/", api_v1.MakeHandler(api_v1.StudentHandlerV1))
 	r.POST("/apiv1/schedule/", api_v1.MakeHandler(api_v1.ScheduleAssignmentHandlerV1))
 	r.POST("/apiv1/assignments/", api_v1.MakeHandler(api_v1.AssignmentHandlerV1))
