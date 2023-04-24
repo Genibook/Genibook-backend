@@ -11,21 +11,10 @@ import (
 	"github.com/gocolly/colly"
 )
 
+//TODO: FG is not a value in course assignments tab3
+
 func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) ([]models.Assignment, error) {
 	assignments := make([]models.Assignment, 0)
-
-	data := constants.ConstantLinks[school]["assignments"]
-	data["studentid"] = studentId
-	data["mpToView"] = mpToView
-	data["courseCode"] = courseCode
-	data["courseSection"] = courseSection
-	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
-	if err != nil {
-		log.Println(err)
-		return assignments, err
-
-	}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
@@ -83,11 +72,39 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 
 	})
 
+	if mpToView == "FG" {
+		mpToView = "MP1"
+	}
+
+	data := constants.ConstantLinks[school]["assignments"]
+	data["studentid"] = studentId
+	data["mpToView"] = mpToView
+	data["courseCode"] = courseCode
+	data["courseSection"] = courseSection
+	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
+	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
+	if err != nil {
+		log.Println(err)
+		return assignments, err
+
+	}
+
 	err = c.Visit(assignemnts_url)
 	if err != nil {
 		log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
 		return assignments, err
 	}
+	// merge dicts and stuff
+	if mpToView == "FG" {
+		mpToView = "MP2"
+		data := constants.ConstantLinks[school]["assignments"]
+		data["studentid"] = studentId
+		data["mpToView"] = mpToView
+		data["courseCode"] = courseCode
+		data["courseSection"] = courseSection
+		assignemnts_url, err := utils.FormatDynamicUrl(data, school)
+	}
+
 	c.OnHTMLDetach("body")
 
 	//fmt.Println(assignments)
