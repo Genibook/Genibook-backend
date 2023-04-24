@@ -149,7 +149,7 @@ func GimmeMPs(c *colly.Collector, studentId string, school string) ([]string, er
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
-		selector := dom.Find("select.fieldvalue")
+		selector := dom.Find("select.fieldvalue:nth-child(1)")
 		selector.Children().Each(func(i int, s *goquery.Selection) {
 			mp := utils.CleanAString(s.Text())
 			mps = append(mps, mp)
