@@ -63,6 +63,26 @@ func GetProfile(w http.ResponseWriter, functionName string, email string, passwo
 	return profile, nil
 }
 
+func GetMPs(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) ([]string, error) {
+	//GimmeMPs
+	mps := make([]string, 0)
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return mps, err
+	}
+
+	mps, e = pages.GimmeMPs(c, IDS[userSelector-1], highSchool)
+	if e != nil {
+		return mps, err
+	}
+
+	return mps, nil
+}
+
 func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string]map[string]string, error) {
 	grades := map[string]map[string]string{}
 	mp, err := GetMP(w, r)
