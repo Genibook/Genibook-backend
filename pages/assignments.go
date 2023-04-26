@@ -94,7 +94,9 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 		log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
 		return assignments, err
 	}
+
 	// merge dicts and stuff
+	// new update: i don't think so cuz it just appends it to a list lol
 	if mpToView == "FG" {
 		mpToView = "MP2"
 		data := constants.ConstantLinks[school]["assignments"]
@@ -103,6 +105,16 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 		data["courseCode"] = courseCode
 		data["courseSection"] = courseSection
 		assignemnts_url, err := utils.FormatDynamicUrl(data, school)
+		if err != nil {
+			log.Println(err)
+			return assignments, err
+		}
+		err = c.Visit(assignemnts_url)
+		if err != nil {
+			log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
+			return assignments, err
+		}
+
 	}
 
 	c.OnHTMLDetach("body")
