@@ -14,6 +14,7 @@ import (
 )
 
 func GradebookData(c *colly.Collector, studentId string, mpToView string, school string) (map[string]models.OneGrade, error) {
+	//TODO TEST WITH Not Graded MP2 thingy CELL
 	grades := map[string]models.OneGrade{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
@@ -56,6 +57,7 @@ func GradebookData(c *colly.Collector, studentId string, mpToView string, school
 						if err != nil {
 							log.Println("gradebook.go - couldn't convert grade string to float grade")
 							log.Println(err)
+							return
 						}
 						aGrade.Grade = float64(float_grade)
 					}

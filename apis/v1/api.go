@@ -105,6 +105,29 @@ func GradesHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, ema
 
 }
 
+func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	functionName := "Func GPAshandlerV1"
+	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GetGrades error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	unweighted, weighted, err := utils.GimmeGPAS(grades)
+
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GimmeGPAS error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	gpas := map[string]float64{}
+	gpas["weighted"] = weighted
+	gpas["unweighted"] = unweighted
+
+	c.JSON(http.StatusOK, gpas)
+
+}
+
 func AssignmentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 
 	functionName := "Func AssignmentHandlerV1"
