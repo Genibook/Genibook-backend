@@ -45,7 +45,7 @@ func GradebookData(c *colly.Collector, studentId string, mpToView string, school
 						aGrade.TeacherName = aName
 						href, found := s.Find("a").Attr("href")
 						if !found {
-							log.Println("gradebook.go - teacher email not found")
+							log.Println("[gradebook.go] - teacher email not found")
 							href = ""
 						}
 						aGrade.TeacherEmail = strings.ReplaceAll(string(href), "mailto:", "")
@@ -55,7 +55,7 @@ func GradebookData(c *colly.Collector, studentId string, mpToView string, school
 
 						float_grade, err := strconv.ParseFloat(grade, 32)
 						if err != nil {
-							log.Println("gradebook.go - couldn't convert grade string to float grade")
+							log.Println("[gradebook.go] - couldn't convert grade string to float grade")
 							log.Println(err)
 							return
 						}

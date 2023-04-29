@@ -16,6 +16,7 @@ func GimmeGPAS(grades map[string]map[string]string) (unweighted float64, weighte
 	sumOfGradesWeighted := 0.0
 	sumOfGradesUnWeighted := 0.0
 
+	// wrong! do not divide by courses, divde by credit
 	courses := float64(len(grades))
 
 	unweighted = 0.0
@@ -33,9 +34,12 @@ func GimmeGPAS(grades map[string]map[string]string) (unweighted float64, weighte
 		if err != nil {
 			return unweighted, weighted, err
 		} else if matched {
+			sumOfGradesUnWeighted += numGrade
 			numGrade += 5
 			sumOfGradesWeighted += numGrade
+
 		} else {
+			sumOfGradesWeighted += numGrade
 			sumOfGradesUnWeighted += numGrade
 		}
 

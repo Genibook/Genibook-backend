@@ -33,6 +33,13 @@ var ConstantLinks = map[string]map[string]map[string]string{
 			"courseCode":    "",
 			"courseSection": "",
 		},
+		"history": {
+			"tab1":      "studentdata",
+			"tab2":      "grading",
+			"tab3":      "history",
+			"action":    "form",
+			"studentid": "",
+		},
 	},
 }
 
