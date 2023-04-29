@@ -12,7 +12,7 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func GradeHistoryData(c *colly.Collector, studentId string, mpToView string, school string) (map[string][]map[string]models.Course, error) {
+func GradeHistoryData(c *colly.Collector, studentId string, school string) (map[string][]map[string]models.Course, error) {
 	courses := map[string][]map[string]models.Course{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {

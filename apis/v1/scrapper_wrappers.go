@@ -112,6 +112,36 @@ func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, emai
 
 }
 
+func GetGradeHistory(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string]map[string]map[string]interface{}, error) {
+	history := map[string]map[string]map[string]interface{}{}
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return history, err
+	}
+
+	historyData, err := pages.GradeHistoryData(c, IDS[userSelector-1], highSchool)
+	if err != nil {
+		return history, err
+	}
+
+	for year := range historyData {
+		history[year] = map[string]map[string]interface{}{}
+
+		for _, aYearsCourseDict := range historyData[year] {
+			for courseName := range aYearsCourseDict {
+				aCourseInaYear := aYearsCourseDict[courseName]
+				history[year][courseName] = aCourseInaYear.ToDict()
+			}
+		}
+	}
+
+	return history, nil
+}
+
 func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string][]models.Assignment, error) {
 	courseAssignments := map[string][]models.Assignment{}
 	mp, err := GetMP(w, r)

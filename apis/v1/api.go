@@ -112,9 +112,14 @@ func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email
 		utils.APIPrintSpecificError("["+functionName+"]  GetGrades error", w, err, http.StatusInternalServerError)
 		return
 	}
-	//fmt.Printf("grades: %v\n", grades)
 
-	unweighted, weighted, err := utils.GimmeGPAS(grades)
+	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	unweighted, weighted, err := utils.GimmeGPAS(grades, history)
 
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GimmeGPAS error", w, err, http.StatusInternalServerError)
