@@ -188,6 +188,7 @@ func StudentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, em
 
 }
 
+// Handler for the GetMPs function, userSelector is needed for selecting the correct student in a multi student account
 func MpsHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	functionName := "MpsHandlerV1"
 	mps, err := GetMPs(w, r, functionName, email, password, highSchool, userSelector)
@@ -196,4 +197,16 @@ func MpsHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email 
 		return
 	}
 	c.JSON(http.StatusOK, mps)
+}
+
+func StudentIDHandlerV1(context *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError("[StudentIDHandlerV1]: Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return
+	}
+
+	context.JSON(http.StatusOK, IDS)
 }

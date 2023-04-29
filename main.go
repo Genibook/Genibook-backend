@@ -28,6 +28,7 @@ func main() {
 	r.POST("/apiv1/profile/", api_v1.MakeHandler(api_v1.ProfileHandlerV1))
 	r.POST("/apiv1/login/", api_v1.MakeHandler(api_v1.LoginHandlerV1))
 	r.POST("/apiv1/gpas/", api_v1.MakeHandler(api_v1.GPAshandlerV1))
+	r.POST("/apiv1/ids/", api_v1.MakeHandler(api_v1.StudentIDHandlerV1))
 
 	log.Fatal(r.Run(":6969"))
 	//log.Fatal(http.ListenAndServe(":6969", nil))
