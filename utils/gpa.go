@@ -30,9 +30,9 @@ func locateHistoricalCourse(courses map[string]map[string]map[string]interface{}
 	found := false
 	for year := range courses {
 		aYearsCourses := courses[year]
-		fmt.Println("year: " + year)
+		//fmt.Println("year: " + year)
 		for coursee := range aYearsCourses {
-			fmt.Printf("coursee: %v\n", coursee)
+			//fmt.Printf("coursee: %v\n", coursee)
 			courseee := aYearsCourses[coursee]
 			if courseee["Name"] == courseName {
 				found = true

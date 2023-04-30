@@ -72,7 +72,7 @@ func GradeHistoryData(c *colly.Collector, studentId string, school string) (map[
 	err = c.Visit(history_url)
 
 	if err != nil {
-		log.Println("Couldn't visit gradebook url: function GradebookData, file gradebook.go")
+		log.Println("Couldn't visit GradeHistoryData url: function GradebookData, file gradehistory.go.go")
 		return courses, err
 	}
 
@@ -113,7 +113,7 @@ func CurrentGradeHistoryData(c *colly.Collector, studentId string, school string
 	err = c.Visit(history_url)
 
 	if err != nil {
-		log.Println("Couldn't visit gradebook url: function GradebookData, file gradebook.go")
+		log.Println("Couldn't visit history_url: function CurrentGradeHistoryData, file gradehistory.go")
 		return currCourses, err
 	}
 
