@@ -113,13 +113,13 @@ func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email
 		return
 	}
 
-	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
+	history, err := GetCurrentGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
 		return
 	}
 
-	unweighted, weighted, err := utils.GimmeGPAS(grades, history)
+	unweighted, weighted, err := utils.GimmeCurrGPAS(grades, history)
 
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GimmeGPAS error", w, err, http.StatusInternalServerError)
@@ -132,6 +132,16 @@ func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email
 
 	c.JSON(http.StatusOK, gpas)
 
+}
+
+func GPAHistoryV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	functionName := "Func GPAHistoryV1"
+	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, history)
 }
 
 func AssignmentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {

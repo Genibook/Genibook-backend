@@ -80,3 +80,44 @@ func GradeHistoryData(c *colly.Collector, studentId string, school string) (map[
 
 	return courses, nil
 }
+func CurrentGradeHistoryData(c *colly.Collector, studentId string, school string) (map[string]string, error) {
+	currCourses := map[string]string{}
+	c.OnHTML("body", func(h *colly.HTMLElement) {
+		dom := h.DOM
+		table := dom.Find(".list")
+		trs := table.Find("tr.listroweven, tr.listrowodd")
+		trs.Each(func(i int, s *goquery.Selection) {
+			name := ""
+			att := ""
+			switch i {
+			case 0:
+				name = utils.CleanAString(s.Text())
+			case 6:
+				att = utils.CleanAString(s.Text())
+			}
+			if name != "" {
+				currCourses[name] = att
+			}
+		})
+	})
+
+	data := constants.ConstantLinks[school]["currHistory"]
+	data["studentid"] = studentId
+	history_url, err := utils.FormatDynamicUrl(data, school)
+	if err != nil {
+		log.Println(err)
+		return currCourses, err
+
+	}
+
+	err = c.Visit(history_url)
+
+	if err != nil {
+		log.Println("Couldn't visit gradebook url: function GradebookData, file gradebook.go")
+		return currCourses, err
+	}
+
+	c.OnHTMLDetach("body")
+
+	return currCourses, nil
+}

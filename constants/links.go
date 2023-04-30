@@ -40,6 +40,13 @@ var ConstantLinks = map[string]map[string]map[string]string{
 			"action":    "form",
 			"studentid": "",
 		},
+		"currHistory": {
+			"tab1":      "studentdata",
+			"tab2":      "grading",
+			"tab3":      "current",
+			"action":    "form",
+			"studentid": "",
+		},
 	},
 }
 

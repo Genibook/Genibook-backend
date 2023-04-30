@@ -142,6 +142,23 @@ func GetGradeHistory(w http.ResponseWriter, r *http.Request, functionName string
 	return history, nil
 }
 
+func GetCurrentGradeHistory(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string]string, error) {
+	history := map[string]string{}
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return history, err
+	}
+	history, err = pages.CurrentGradeHistoryData(c, IDS[userSelector-1], highSchool)
+	if err != nil {
+		return history, err
+	}
+
+	return history, nil
+}
+
 func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string][]models.Assignment, error) {
 	courseAssignments := map[string][]models.Assignment{}
 	mp, err := GetMP(w, r)
