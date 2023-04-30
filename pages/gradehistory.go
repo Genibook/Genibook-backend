@@ -85,19 +85,24 @@ func CurrentGradeHistoryData(c *colly.Collector, studentId string, school string
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
 		table := dom.Find(".list")
-		trs := table.Find("tr.listroweven, tr.listrowodd")
+		trs := table.Find("tbody>tr.listroweven, tbody>tr.listrowodd")
 		trs.Each(func(i int, s *goquery.Selection) {
 			name := ""
 			att := ""
-			switch i {
-			case 0:
-				name = utils.CleanAString(s.Text())
-			case 6:
-				att = utils.CleanAString(s.Text())
-			}
+
+			s.Find("td").Each(func(k int, td *goquery.Selection) {
+				switch k {
+				case 0:
+					name = utils.CleanAString(td.Text())
+				case 6:
+					att = utils.CleanAString(td.Text())
+				}
+			})
+
 			if name != "" {
 				currCourses[name] = att
 			}
+
 		})
 	})
 
