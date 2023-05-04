@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"log"
 	"strings"
 	"webscrapper/constants"
@@ -78,11 +79,11 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 
 	data := constants.ConstantLinks[school]["assignments"]
 	data["studentid"] = studentId
-	data["mpToView"] = mpToView
+	data["mp"] = mpToView
 	data["courseCode"] = courseCode
 	data["courseSection"] = courseSection
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
+	fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
 	if err != nil {
 		log.Println(err)
 		return assignments, err
@@ -91,7 +92,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 
 	err = c.Visit(assignemnts_url)
 	if err != nil {
-		log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
+		log.Println("[AssignmentsDataForACourse] : Couldn't visit assignment url: file assignments.go")
 		return assignments, err
 	}
 
@@ -111,7 +112,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 		}
 		err = c.Visit(assignemnts_url)
 		if err != nil {
-			log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
+			log.Println("[AssignmentsDataForACourse until mpToView=='FG']: Couldn't visit assignment url: file assignments.go")
 			return assignments, err
 		}
 

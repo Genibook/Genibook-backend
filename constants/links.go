@@ -29,7 +29,7 @@ var ConstantLinks = map[string]map[string]map[string]string{
 			"tab3":          "coursesummary",
 			"studentid":     "",
 			"action":        "form",
-			"mpToView":      "",
+			"mp":            "",
 			"courseCode":    "",
 			"courseSection": "",
 		},
