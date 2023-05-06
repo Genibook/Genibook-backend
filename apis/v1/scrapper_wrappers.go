@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"webscrapper/constants"
 	"webscrapper/models"
 	"webscrapper/pages"
@@ -12,16 +11,6 @@ import (
 
 	"github.com/gocolly/colly"
 )
-
-func GetMP(w http.ResponseWriter, r *http.Request) (string, error) {
-	mp := r.URL.Query().Get(constants.MPFormKey)
-	if !strings.Contains(mp, "MP") {
-		log.Println("Marking Period Not Valid: " + mp)
-		http.Error(w, "Marking Period Not Valid: "+mp, http.StatusNotAcceptable)
-		return "", http.ErrBodyNotAllowed
-	}
-	return mp, nil
-}
 
 func GetIDs(userSelector int, c *colly.Collector, highSchool string, w http.ResponseWriter) ([]string, error) {
 	IDS, err := pages.StudentIds(c, highSchool)
@@ -61,6 +50,33 @@ func GetProfile(w http.ResponseWriter, functionName string, email string, passwo
 	}
 
 	return profile, nil
+}
+
+func GetGrade(w http.ResponseWriter, functionName string, email string, password string, highSchool string, userSelector int) (int, error) {
+
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	grades, e := pages.WhatGradeIsStudent(c, highSchool)
+
+	if e != nil {
+		return 0, e
+	}
+
+	return grades[userSelector], nil
+}
+
+func GetListOfStudentGrade(w http.ResponseWriter, functionName string, email string, password string, highSchool string, userSelector int) ([]int, error) {
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	grades, e := pages.WhatGradeIsStudent(c, highSchool)
+
+	if e != nil {
+		return make([]int, 0), e
+	}
+
+	return grades, nil
 }
 
 func GetMPs(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) ([]string, error) {

@@ -1,6 +1,10 @@
 package api_v1
 
 import (
+	"log"
+	"net/http"
+	"strings"
+	"webscrapper/constants"
 	"webscrapper/models"
 )
 
@@ -28,4 +32,13 @@ func CombineGradeAssiandProfile(assignments map[string][]models.Assignment, grad
 
 	return student
 
+}
+func GetMP(w http.ResponseWriter, r *http.Request) (string, error) {
+	mp := r.URL.Query().Get(constants.MPFormKey)
+	if !strings.Contains(mp, "MP") {
+		log.Println("Marking Period Not Valid: " + mp)
+		http.Error(w, "Marking Period Not Valid: "+mp, http.StatusNotAcceptable)
+		return "", http.ErrBodyNotAllowed
+	}
+	return mp, nil
 }

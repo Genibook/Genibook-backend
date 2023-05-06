@@ -172,10 +172,48 @@ func StudentIds(c *colly.Collector, school string) ([]string, error) {
 	}
 	err = c.Visit(profile_url)
 	if err != nil {
-		log.Println("Couldn't visit profile url, function: StudentIdAndCurrMP, file: profile.go")
+		log.Println("[StudentIds]: Couldn't visit profile url, file: profile.go")
 	}
 	c.OnHTMLDetach("body")
 
 	return info, err
 
+}
+
+func WhatGradeIsStudent(c *colly.Collector, school string) ([]int, error) {
+	grades := make([]int, 0)
+
+	c.OnHTML("body", func(h *colly.HTMLElement) {
+		notecards := h.DOM.Find("table.notecard")
+		notecards.Each(func(i int, notecard *goquery.Selection) {
+			table := notecard.Find("tbody table > tbody")
+			schedule_td := table.Find("tr[valign=\"top\"] > td[valign=\"top\"]:nth-child(2)")
+			top_half := schedule_td.Find("table.list > tbody > tr")
+			top_half.Each(func(i int, tr *goquery.Selection) {
+				switch i {
+				case 0:
+					span := tr.Find("td > span[style='font-size: 2em;']")
+					grade, err := strconv.Atoi(utils.CleanAString(span.Text()))
+					if err != nil {
+						return
+					}
+					grades = append(grades, grade)
+				}
+
+			})
+		})
+
+	})
+	profile_url, err := utils.FormatUrl("profile", school)
+	if err != nil {
+		log.Println(err)
+		return grades, err
+	}
+	err = c.Visit(profile_url)
+	if err != nil {
+		log.Println("[WhatGradeIsStudent]: Couldn't visit profile url, file: profile.go")
+	}
+	c.OnHTMLDetach("body")
+
+	return grades, err
 }

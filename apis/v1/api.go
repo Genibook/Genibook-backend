@@ -90,6 +90,16 @@ func ProfileHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, em
 	c.JSON(http.StatusOK, student)
 }
 
+func StudentGradesHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	functionName := "Func StudentGradesHandlerV1"
+	grades, err := GetListOfStudentGrade(w, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"] GetListOfStudentGrade error", w, err, http.StatusInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, grades)
+}
+
 // <note>: userSelector is 1st indexed meaning the first user is 1, second is 2.
 // Backend processes it like that
 func GradesHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
@@ -113,35 +123,94 @@ func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email
 		return
 	}
 
+	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		return
+	}
+
 	history, err := GetCurrentGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
-		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
+		utils.APIPrintSpecificError("["+functionName+"]  GetCurrentGradeHistory error", w, err, http.StatusInternalServerError)
 		return
 	}
 
-	unweighted, weighted, err := utils.GimmeCurrGPAS(grades, history)
+	if student_grade < 9 {
+		gpa, err := utils.GPAsOfMiddleSchoolers(grades)
 
-	if err != nil {
-		utils.APIPrintSpecificError("["+functionName+"]  GimmeGPAS error", w, err, http.StatusInternalServerError)
-		return
+		if err != nil {
+			utils.APIPrintSpecificError("["+functionName+"]  GPAsOfMiddleSchoolers error", w, err, http.StatusInternalServerError)
+			return
+		}
+
+		gpas := map[string]float64{}
+		gpas["weighted"] = gpa
+		gpas["unweighted"] = gpa
+
+		c.JSON(http.StatusOK, gpas)
+	} else if student_grade >= 9 {
+		unweighted, weighted, err := utils.GimmeCurrGPAS(grades, history)
+
+		if err != nil {
+			utils.APIPrintSpecificError("["+functionName+"]  GimmeCurrGPAS error", w, err, http.StatusInternalServerError)
+			return
+		}
+
+		gpas := map[string]float64{}
+		gpas["weighted"] = weighted
+		gpas["unweighted"] = unweighted
+
+		c.JSON(http.StatusOK, gpas)
 	}
-
-	gpas := map[string]float64{}
-	gpas["weighted"] = weighted
-	gpas["unweighted"] = unweighted
-
-	c.JSON(http.StatusOK, gpas)
 
 }
 
-func GPAHistoryV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	functionName := "Func GPAHistoryV1"
+func GPAHistoryHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	functionName := "Func GPAHistoryHandlerV1"
+	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GetGrades error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		return
+	}
+
 	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
 		return
 	}
-	c.JSON(http.StatusOK, history)
+
+	if student_grade < 9 {
+		gpa, err := utils.GPAsOfMiddleSchoolers(grades)
+
+		if err != nil {
+			utils.APIPrintSpecificError("["+functionName+"]  GPAsOfMiddleSchoolers error", w, err, http.StatusInternalServerError)
+			return
+		}
+
+		gpas := map[string]float64{}
+		gpas["weighted"] = gpa
+		gpas["unweighted"] = gpa
+
+		c.JSON(http.StatusOK, gpas)
+	} else if student_grade >= 9 {
+		unweighted, weighted, err := utils.GimmeGPAS(grades, history)
+
+		if err != nil {
+			utils.APIPrintSpecificError("["+functionName+"]  GimmeGPAS error", w, err, http.StatusInternalServerError)
+			return
+		}
+
+		gpas := map[string]float64{}
+		gpas["weighted"] = weighted
+		gpas["unweighted"] = unweighted
+
+		c.JSON(http.StatusOK, history)
+	}
+
 }
 
 func AssignmentHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {

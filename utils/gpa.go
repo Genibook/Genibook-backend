@@ -47,6 +47,25 @@ func locateHistoricalCourse(courses map[string]map[string]map[string]interface{}
 	return course, nil
 }
 
+func GPAsOfMiddleSchoolers(grades map[string]map[string]string) (gpa float64, err error) {
+
+	sum := 0.0
+	length := len(grades)
+
+	gpa = 0.0
+	for key := range grades {
+		grade := grades[key]
+		theGrade := grade["grade"]
+		numGrade, err := strconv.ParseFloat(theGrade, 64)
+		if err != nil {
+			return gpa, err
+		}
+		sum += numGrade
+	}
+	gpa = round(sum / float64(length))
+	return gpa, nil
+}
+
 func GimmeGPAS(grades map[string]map[string]string, courses map[string]map[string]map[string]interface{}) (unweighted float64, weighted float64, err error) {
 	sumOfGradesWeighted := 0.0
 	sumOfGradesUnWeighted := 0.0
