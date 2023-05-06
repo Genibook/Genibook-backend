@@ -38,12 +38,14 @@ func GradeHistoryData(c *colly.Collector, studentId string, school string) (map[
 					case 3:
 						course.School = utils.CleanAString(td.Text())
 					case 4:
+						course.FG = utils.CleanAString(td.Text())
+					case 5:
 						attempted, err := strconv.ParseFloat(utils.CleanAString(td.Text()), 64)
 						if err != nil {
 							return
 						}
 						course.Attempted = float32(attempted)
-					case 5:
+					case 6:
 						earned, err := strconv.ParseFloat(utils.CleanAString(td.Text()), 64)
 						if err != nil {
 							return

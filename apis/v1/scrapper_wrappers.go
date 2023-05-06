@@ -9,6 +9,7 @@ import (
 	"webscrapper/pages"
 	"webscrapper/utils"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gocolly/colly"
 )
 
@@ -63,7 +64,7 @@ func GetGrade(w http.ResponseWriter, functionName string, email string, password
 		return 0, e
 	}
 
-	return grades[userSelector], nil
+	return grades[userSelector-1], nil
 }
 
 func GetListOfStudentGrade(w http.ResponseWriter, functionName string, email string, password string, highSchool string, userSelector int) ([]int, error) {
@@ -126,6 +127,55 @@ func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, emai
 
 	return grades, nil
 
+}
+
+func functionForGpashandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) (gpas map[string]float64, err error) {
+	gpas = map[string]float64{}
+	functionName := "Func GPAshandlerV1"
+	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GetGrades error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		return
+	}
+
+	history, err := GetCurrentGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GetCurrentGradeHistory error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if student_grade < 9 {
+		gpa, err := utils.GPAsOfMiddleSchoolers(grades)
+
+		if err != nil {
+			utils.APIPrintSpecificError("["+functionName+"]  GPAsOfMiddleSchoolers error", w, err, http.StatusInternalServerError)
+			return gpas, err
+		}
+
+		gpas := map[string]float64{}
+		gpas["weighted"] = gpa
+		gpas["unweighted"] = gpa
+
+		c.JSON(http.StatusOK, gpas)
+	} else if student_grade >= 9 {
+		unweighted, weighted, err := utils.GimmeCurrGPAS(grades, history)
+
+		if err != nil {
+			utils.APIPrintSpecificError("["+functionName+"]  GimmeCurrGPAS error", w, err, http.StatusInternalServerError)
+			return gpas, err
+		}
+
+		gpas["weighted"] = weighted
+		gpas["unweighted"] = unweighted
+
+	}
+
+	return gpas, nil
 }
 
 func GetGradeHistory(w http.ResponseWriter, r *http.Request, functionName string, email string, password string, highSchool string, userSelector int) (map[string]map[string]map[string]interface{}, error) {

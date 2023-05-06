@@ -116,100 +116,36 @@ func GradesHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, ema
 }
 
 func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	functionName := "Func GPAshandlerV1"
-	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
-	if err != nil {
-		utils.APIPrintSpecificError("["+functionName+"]  GetGrades error", w, err, http.StatusInternalServerError)
-		return
-	}
-
-	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
+	gpas, err := functionForGpashandlerV1(c, w, r, email, password, highSchool, userSelector)
 	if err != nil {
 		return
 	}
-
-	history, err := GetCurrentGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
-	if err != nil {
-		utils.APIPrintSpecificError("["+functionName+"]  GetCurrentGradeHistory error", w, err, http.StatusInternalServerError)
-		return
-	}
-
-	if student_grade < 9 {
-		gpa, err := utils.GPAsOfMiddleSchoolers(grades)
-
-		if err != nil {
-			utils.APIPrintSpecificError("["+functionName+"]  GPAsOfMiddleSchoolers error", w, err, http.StatusInternalServerError)
-			return
-		}
-
-		gpas := map[string]float64{}
-		gpas["weighted"] = gpa
-		gpas["unweighted"] = gpa
-
-		c.JSON(http.StatusOK, gpas)
-	} else if student_grade >= 9 {
-		unweighted, weighted, err := utils.GimmeCurrGPAS(grades, history)
-
-		if err != nil {
-			utils.APIPrintSpecificError("["+functionName+"]  GimmeCurrGPAS error", w, err, http.StatusInternalServerError)
-			return
-		}
-
-		gpas := map[string]float64{}
-		gpas["weighted"] = weighted
-		gpas["unweighted"] = unweighted
-
-		c.JSON(http.StatusOK, gpas)
-	}
-
+	c.JSON(http.StatusOK, gpas)
 }
 
 func GPAHistoryHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	functionName := "Func GPAHistoryHandlerV1"
-	grades, err := GetGrades(w, r, functionName, email, password, highSchool, userSelector)
-	if err != nil {
-		utils.APIPrintSpecificError("["+functionName+"]  GetGrades error", w, err, http.StatusInternalServerError)
-		return
-	}
-
-	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
-	if err != nil {
-		return
-	}
-
 	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if student_grade < 9 {
-		gpa, err := utils.GPAsOfMiddleSchoolers(grades)
-
-		if err != nil {
-			utils.APIPrintSpecificError("["+functionName+"]  GPAsOfMiddleSchoolers error", w, err, http.StatusInternalServerError)
-			return
-		}
-
-		gpas := map[string]float64{}
-		gpas["weighted"] = gpa
-		gpas["unweighted"] = gpa
-
-		c.JSON(http.StatusOK, gpas)
-	} else if student_grade >= 9 {
-		unweighted, weighted, err := utils.GimmeGPAS(grades, history)
-
-		if err != nil {
-			utils.APIPrintSpecificError("["+functionName+"]  GimmeGPAS error", w, err, http.StatusInternalServerError)
-			return
-		}
-
-		gpas := map[string]float64{}
-		gpas["weighted"] = weighted
-		gpas["unweighted"] = unweighted
-
-		c.JSON(http.StatusOK, history)
+	gpas, err := functionForGpashandlerV1(c, w, r, email, password, highSchool, userSelector)
+	if err != nil {
+		return
 	}
+
+	gpaHistory, err := utils.GimmeHistoryGPAS(history)
+
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"]  GimmeHistoryGPAS error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	gpaHistory["Current"] = gpas
+
+	c.JSON(http.StatusOK, gpaHistory)
 
 }
 

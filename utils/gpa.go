@@ -13,38 +13,31 @@ func round(num float64) float64 {
 	return math.Round(num*100) / 100
 }
 
-func convertToFloat(val interface{}) (float64, error) {
+func convertToFloat(val interface{}) (float32, error) {
 	// Type assertion to float64
-	f, ok := val.(float64)
+	f, ok := val.(float32)
 	if !ok {
-		return 0, fmt.Errorf("unable to convert %v to float64", val)
+		return 0, fmt.Errorf("unable to convert %v to float32", val)
 	}
 	return f, nil
 }
 
-// PRECONDITION: make sure that NO DUPLICATES
-// returns last occuring course using CourseName string
-func locateHistoricalCourse(courses map[string]map[string]map[string]interface{}, courseName string) (map[string]interface{}, error) {
-
-	course := map[string]interface{}{}
-	found := false
-	for year := range courses {
-		aYearsCourses := courses[year]
-		//fmt.Println("year: " + year)
-		for coursee := range aYearsCourses {
-			//fmt.Printf("coursee: %v\n", coursee)
-			courseee := aYearsCourses[coursee]
-			if courseee["Name"] == courseName {
-				found = true
-				course = courseee
-			}
-		}
-
+func convertToString(val interface{}) (string, error) {
+	// Type assertion to float64
+	s, ok := val.(string)
+	if !ok {
+		return "", fmt.Errorf("unable to convert %v to string", val)
 	}
-	if !found {
-		return course, fmt.Errorf("[locateCourse]: cannot locate a course with the name " + courseName)
+	return s, nil
+}
+
+func convertToInt(val interface{}) (int, error) {
+	// Type assertion to float64
+	i, ok := val.(int)
+	if !ok {
+		return 0, fmt.Errorf("unable to convert %v to string", val)
 	}
-	return course, nil
+	return i, nil
 }
 
 func GPAsOfMiddleSchoolers(grades map[string]map[string]string) (gpa float64, err error) {
@@ -66,53 +59,96 @@ func GPAsOfMiddleSchoolers(grades map[string]map[string]string) (gpa float64, er
 	return gpa, nil
 }
 
-func GimmeGPAS(grades map[string]map[string]string, courses map[string]map[string]map[string]interface{}) (unweighted float64, weighted float64, err error) {
-	sumOfGradesWeighted := 0.0
-	sumOfGradesUnWeighted := 0.0
-	sumOfCredits := 0.0
+func GimmeHistoryGPAS(courses map[string]map[string]map[string]interface{}) (gpaHistory map[string]map[string]float64, err error) {
+	gpaHistory = map[string]map[string]float64{}
 
-	unweighted = 0.0
-	weighted = 0.0
-
-	for key := range grades {
-		grade := grades[key]
-		theGrade := grade["grade"]
-		class := key
-		aClassDict, err := locateHistoricalCourse(courses, class)
-		if err != nil {
-			return unweighted, weighted, err
-		}
-		numGrade, err := strconv.ParseFloat(theGrade, 64)
-		if err != nil {
-			return unweighted, weighted, err
-		}
-		matched, err := regexp.MatchString(constants.DetermineWeightedOrNotRegrexPattern, strings.ToLower(class))
-		if err != nil {
-			return unweighted, weighted, err
+	for year := range courses {
+		if len(courses[year]) < 7 {
+			continue
 		}
 
-		cred, err := convertToFloat(aClassDict["Earned"])
-		if err != nil {
-			return unweighted, weighted, err
+		sumOfGradesWeighted := 0.0
+		sumOfGradesUnWeighted := 0.0
+		sumOfCredits := 0.0
+
+		// fmt.Printf("courses[year]: %v\n", courses[year])
+
+		for key := range courses[year] {
+			grade := courses[year][key]
+
+			// fmt.Printf("grade: %v\n", grade)
+
+			theGrade := grade["FG"]
+
+			if theGrade == "P" {
+				continue
+			}
+
+			class := key
+
+			s, e := convertToString(theGrade)
+			if e != nil {
+				return gpaHistory, err
+			}
+
+			numGrade, err := strconv.ParseFloat(s, 64)
+			if err != nil {
+				return gpaHistory, err
+			}
+
+			schoolGrade, err := convertToInt(grade["Grade"])
+			if err != nil {
+				return gpaHistory, err
+			}
+
+			matched, err := regexp.MatchString(constants.DetermineWeightedOrNotRegrexPattern, strings.ToLower(class))
+			if err != nil {
+				return gpaHistory, err
+			}
+
+			credd, err := convertToFloat(grade["Earned"])
+			if err != nil {
+				return gpaHistory, err
+			}
+			cred := float64(credd)
+			sumOfCredits += float64(cred)
+
+			if matched {
+				if schoolGrade >= 9 {
+					sumOfGradesUnWeighted += numGrade * cred
+					numGrade += 5
+					sumOfGradesWeighted += numGrade * cred
+				} else {
+					sumOfGradesWeighted += numGrade * cred
+					sumOfGradesUnWeighted += numGrade * cred
+				}
+
+			} else {
+				sumOfGradesWeighted += numGrade * cred
+				sumOfGradesUnWeighted += numGrade * cred
+			}
+
 		}
-		sumOfCredits += cred
 
-		if matched {
-			sumOfGradesUnWeighted += numGrade
-			numGrade += 5
-			sumOfGradesWeighted += numGrade
+		// fmt.Printf("sumOfCredits: %v\n", sumOfCredits)
+		// fmt.Printf("sumOfGradesUnWeighted: %v\n", sumOfGradesUnWeighted)
+		// fmt.Printf("sumOfGradesWeighted: %v\n", sumOfGradesWeighted)
 
-		} else {
-			sumOfGradesWeighted += numGrade
-			sumOfGradesUnWeighted += numGrade
+		unweighted := 0.0
+		weighted := 0.0
+
+		unweighted = round(sumOfGradesUnWeighted / sumOfCredits)
+		weighted = round(sumOfGradesWeighted / sumOfCredits)
+
+		gpaHistory[year] = map[string]float64{
+			"unweighted": unweighted,
+			"weighted":   weighted,
 		}
 
 	}
 
-	unweighted = round(sumOfGradesUnWeighted / sumOfCredits)
-	weighted = round(sumOfGradesWeighted / sumOfCredits)
+	return gpaHistory, nil
 
-	return round(unweighted), round(weighted), nil
 }
 
 func GimmeCurrGPAS(grades map[string]map[string]string, courses map[string]string) (unweighted float64, weighted float64, err error) {
