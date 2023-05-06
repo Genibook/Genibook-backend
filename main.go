@@ -11,6 +11,7 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.LoadHTMLFiles("pp.html")
 	//r.Use(api_v1.JsonLoggerMiddleware())
 
 	r.POST("/hi/", func(c *gin.Context) {
@@ -18,6 +19,10 @@ func main() {
 			"message": "pong",
 		})
 
+	})
+
+	r.GET("/pp/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "pp.html", gin.H{})
 	})
 
 	r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))
