@@ -52,6 +52,7 @@ func GradebookData(c *colly.Collector, studentId string, mpToView string, school
 						//fmt.Println(aGrade.TeacherEmail)
 					} else if k == 2 {
 						grade := strings.TrimSpace(strings.ReplaceAll(s.Find("tbody>tr>td:nth-child(1)").Text(), "%", ""))
+						grade = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(grade, "\n", ""), "*PROJECTED", ""))
 
 						float_grade, err := strconv.ParseFloat(grade, 32)
 						if err != nil {

@@ -130,7 +130,7 @@ func GPAHistoryHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request,
 		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
 		return
 	}
-
+	// remember to pass in mp=FG not mp=MP2 or mp=MP1
 	gpas, err := functionForGpashandlerV1(c, w, r, email, password, highSchool, userSelector)
 	if err != nil {
 		return
