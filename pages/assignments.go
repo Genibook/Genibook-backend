@@ -21,7 +21,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 		dom := h.DOM
 		rows := dom.Find(".list > tbody>tr")
 		rows.Each(func(i int, row *goquery.Selection) {
-			if row.Children().Length() == constants.CourseSummaryRowLength && i != 1 {
+			if row.Children().Length() == constants.CourseSummaryRowLength && i != 0 {
 				aAssignment := models.Assignment{
 					CourseName:   "",
 					MP:           "",
@@ -58,7 +58,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 						aAssignment.FullDate = aAssignment.Date
 					} else if i == constants.CourseSummaryGradeIndex {
 						aAssignment.GradeNum, aAssignment.GradePercent = utils.ProcessGradeCellForAssignment(s)
-					} else if i >= constants.CourseSummaryCommentIndex {
+					} else if i == constants.CourseSummaryCommentIndex {
 						aAssignment.Comment = utils.CleanAString(s.Text())
 					} else if i == constants.CourseSummaryPrevIndex {
 						aAssignment.Prev = utils.CleanAString(s.Text())
@@ -74,16 +74,15 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	})
 
 	if mpToView == "FG" {
-		mpToView = "MP1"
+		mpToView = "allMP"
 	}
 
 	data := constants.ConstantLinks[school]["assignments"]
 	data["studentid"] = studentId
-	data["mp"] = mpToView
-	data["courseCode"] = courseCode
-	data["courseSection"] = courseSection
+	data["dateRange"] = mpToView
+	data["courseAndSection"] = fmt.Sprintf("%v:%v", courseCode, courseSection)
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
+
 	if err != nil {
 		log.Println(err)
 		return assignments, err
@@ -96,28 +95,6 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 		return assignments, err
 	}
 
-	// merge dicts and stuff
-	// new update: i don't think so cuz it just appends it to a list lol
-	if mpToView == "FG" {
-		mpToView = "MP2"
-		data := constants.ConstantLinks[school]["assignments"]
-		data["studentid"] = studentId
-		data["mpToView"] = mpToView
-		data["courseCode"] = courseCode
-		data["courseSection"] = courseSection
-		assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-		if err != nil {
-			log.Println(err)
-			return assignments, err
-		}
-		err = c.Visit(assignemnts_url)
-		if err != nil {
-			log.Println("[AssignmentsDataForACourse until mpToView=='FG']: Couldn't visit assignment url: file assignments.go")
-			return assignments, err
-		}
-
-	}
-
 	c.OnHTMLDetach("body")
 
 	//fmt.Println(assignments)
@@ -128,21 +105,11 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) ([]models.ScheduleAssignment, error) {
 	assignments := make([]models.ScheduleAssignment, 0)
 
-	data := constants.ConstantLinks[school]["assignments"]
-	data["studentid"] = studentId
-	data["mpToView"] = mpToView
-	data["courseCode"] = courseCode
-	data["courseSection"] = courseSection
-	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	if err != nil {
-		return assignments, err
-	}
-
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
 		rows := dom.Find(".list > tbody>tr")
 		rows.Each(func(i int, row *goquery.Selection) {
-			if row.Children().Length() == constants.CourseSummaryRowLength && i != 1 {
+			if row.Children().Length() == constants.CourseSummaryRowLength && i != 0 {
 				notGraded := false
 				tds := row.Children()
 				tds.Each(func(i int, s *goquery.Selection) {
@@ -185,12 +152,25 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 		})
 
 	})
-
-	err = c.Visit(assignemnts_url)
+	if mpToView == "FG" {
+		mpToView = "allMP"
+	}
+	data := constants.ConstantLinks[school]["assignments"]
+	data["studentid"] = studentId
+	data["dateRange"] = mpToView
+	data["courseAndSection"] = fmt.Sprintf("%v:%v", courseCode, courseSection)
+	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
-		log.Println("Couldn't visit assignment url: function AssignmentsDataForACourse, file assignments.go")
 		return assignments, err
 	}
+
+	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
+	err = c.Visit(assignemnts_url)
+	if err != nil {
+		log.Println("[ScheduleDataForACourse]: Couldn't visit assignment url file assignments.go")
+		return assignments, err
+	}
+
 	c.OnHTMLDetach("body")
 
 	return assignments, err

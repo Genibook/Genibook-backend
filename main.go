@@ -33,6 +33,5 @@ func main() {
 	r.POST("/apiv1/ids/", api_v1.MakeHandler(api_v1.StudentIDHandlerV1))
 
 	log.Fatal(r.Run(":6969"))
-	//log.Fatal(http.ListenAndServe(":6969", nil))
 
 }

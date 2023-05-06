@@ -42,7 +42,7 @@ func BasicDataExtractor(row *goquery.Selection, courseName string) map[string]st
 		if i == constants.CourseSummaryAssignmentNameIndex {
 			data[constants.CourseSummaryNameAssignment] = s.Find("b").Text()
 
-			data[constants.CourseSummaryNameDescription] = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(s.Find("div[style=\"font-style:italic;padding-left:10px;\"]").Text(), data[constants.CourseSummaryNameAssignment], ""), "\n", ""))
+			data[constants.CourseSummaryNameDescription] = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(s.Find("div[style=\"font-style:italic;padding-left:5px;\"]").Text(), data[constants.CourseSummaryNameAssignment], ""), "\n", ""))
 			//fmt.Println(data[constants.CourseSummaryNameDescription])
 
 		} else if i == constants.CourseSummaryCategoryIndex {
@@ -86,23 +86,7 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 	lenDivs := divs.Length()
 
 	if lenDivs == constants.ANotSussyGradeCellDivCount {
-		subDivs := divs.Find("div")
-		if subDivs.Length() == constants.GradeCellThatIsJustNormaSubDivCount {
-			//normal cell
-			gradePercent = strings.ReplaceAll(CleanAString(divs.Text()), "%", "")
-		} else {
-			// ungraded cell
-			subDivs.Each(func(i int, s *goquery.Selection) {
-				if i == 1 {
-
-					gradeNum = constants.NotGradedString
-					gradePoints := CleanAString(s.Text())
-
-					gradePercent = strings.ReplaceAll(gradePoints, constants.AssignmentPtsString, "")
-				}
-			})
-
-		}
+		gradePercent = strings.ReplaceAll(CleanAString(divs.Text()), "%", "")
 
 	} else if lenDivs == 2 {
 		//sussy eetash cell
@@ -133,6 +117,19 @@ func ProcessGradeCellForAssignment(s *goquery.Selection) (string, string) {
 
 		}
 
+	} else if lenDivs == constants.UngradedCellDivLength {
+		subDivs := divs.Find("div")
+		// ungraded cell
+		subDivs.Each(func(i int, s *goquery.Selection) {
+			if i == 1 {
+
+				gradeNum = constants.NotGradedString
+				gradePoints := CleanAString(s.Text())
+
+				gradePercent = strings.ReplaceAll(gradePoints, constants.AssignmentPtsString, "")
+			}
+		})
+
 	}
 
 	return gradeNum, gradePercent
@@ -145,10 +142,11 @@ func ProcessGradeCellForSchedule(s *goquery.Selection) (string, bool) {
 	divs := s.Find("div")
 	lenDivs := divs.Length()
 
-	if lenDivs == constants.ANotSussyGradeCellDivCount {
+	if lenDivs == constants.UngradedCellDivLength {
 		subDivs := divs.Find("div")
 		if subDivs.Length() == constants.GradeCellThatHasNotGradedSubDivCount {
 			// ungraded cell
+			//fmt.Println("found un graded cell")
 			subDivs.Each(func(i int, s *goquery.Selection) {
 				if i == 1 {
 					gradePoints = strings.ReplaceAll(CleanAString(s.Text()), constants.AssignmentPtsString, "")
@@ -157,7 +155,6 @@ func ProcessGradeCellForSchedule(s *goquery.Selection) (string, bool) {
 			})
 
 		}
-
 	}
 
 	return gradePoints, notGraded
