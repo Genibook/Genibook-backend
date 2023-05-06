@@ -35,10 +35,13 @@ func CombineGradeAssiandProfile(assignments map[string][]models.Assignment, grad
 }
 func GetMP(w http.ResponseWriter, r *http.Request) (string, error) {
 	mp := r.URL.Query().Get(constants.MPFormKey)
-	if !strings.Contains(mp, "MP") {
+	if strings.Contains(mp, "MP") || strings.Contains(mp, "FG") {
+		return mp, nil
+	} else {
 		log.Println("Marking Period Not Valid: " + mp)
 		http.Error(w, "Marking Period Not Valid: "+mp, http.StatusNotAcceptable)
 		return "", http.ErrBodyNotAllowed
+
 	}
-	return mp, nil
+
 }
