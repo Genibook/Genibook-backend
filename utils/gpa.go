@@ -76,8 +76,6 @@ func GimmeHistoryGPAS(courses map[string]map[string]map[string]interface{}) (gpa
 		for key := range courses[year] {
 			grade := courses[year][key]
 
-			// fmt.Printf("grade: %v\n", grade)
-
 			theGrade := grade["FG"]
 
 			if theGrade == "P" {
@@ -127,6 +125,10 @@ func GimmeHistoryGPAS(courses map[string]map[string]map[string]interface{}) (gpa
 				sumOfGradesWeighted += numGrade * cred
 				sumOfGradesUnWeighted += numGrade * cred
 			}
+
+			// fmt.Printf("grade: %v\n", grade)
+			// fmt.Printf("numGrade: %v\n", numGrade)
+			// fmt.Printf("cred: %v\n", cred)
 
 		}
 
@@ -189,12 +191,12 @@ func GimmeCurrGPAS(grades map[string]map[string]string, courses map[string]strin
 			sumOfGradesUnWeighted += numGrade * cred
 		}
 
-		// fmt.Printf("class: %v\n", class)
-		// fmt.Printf("%f * %f\n", numGrade, cred)
-		// fmt.Printf("courses: %v\n", courses)
-		// fmt.Printf("sumOfCredits: %v\n", sumOfCredits)
-		// fmt.Printf("sumOfGradesUnWeighted: %v\n", sumOfGradesUnWeighted)
-		// fmt.Printf("sumOfGradesWeighted: %v\n", sumOfGradesWeighted)
+		fmt.Printf("class: %v\n", class)
+		fmt.Printf("%f * %f\n", numGrade, cred)
+		fmt.Printf("courses: %v\n", courses)
+		fmt.Printf("sumOfCredits: %v\n", sumOfCredits)
+		fmt.Printf("sumOfGradesUnWeighted: %v\n", sumOfGradesUnWeighted)
+		fmt.Printf("sumOfGradesWeighted: %v\n", sumOfGradesWeighted)
 
 	}
 

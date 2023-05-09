@@ -1,3 +1,3 @@
 package constants
 
-var DetermineWeightedOrNotRegrexPattern = `(ap|honors|^(h-)|h$|honor|^ap)`
+var DetermineWeightedOrNotRegrexPattern = `(honors|^(h-)|h$|honor|^ap)`
