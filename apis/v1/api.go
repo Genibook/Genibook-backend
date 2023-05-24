@@ -1,6 +1,7 @@
 package api_v1
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -116,22 +117,39 @@ func GradesHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, ema
 }
 
 func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	gpas, err := functionForGpashandlerV1(c, w, r, email, password, highSchool, userSelector)
+	functionName := "Func GPAshandlerV1"
+	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		return
 	}
+	gpas, err := functionForGpashandlerV1(c, w, r, email, password, highSchool, userSelector, student_grade)
+	if err != nil {
+		return
+	}
+	fmt.Printf("gpas: %v\n", gpas)
 	c.JSON(http.StatusOK, gpas)
 }
 
 func GPAHistoryHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	functionName := "Func GPAHistoryHandlerV1"
+
+	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
+	if err != nil {
+		return
+	}
+
+	if student_grade < 9 {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
 	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
 		return
 	}
 	// remember to pass in mp=FG not mp=MP2 or mp=MP1
-	gpas, err := functionForGpashandlerV1(c, w, r, email, password, highSchool, userSelector)
+	gpas, err := functionForGpashandlerV1(c, w, r, email, password, highSchool, userSelector, student_grade)
 	if err != nil {
 		return
 	}
