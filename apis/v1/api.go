@@ -1,7 +1,6 @@
 package api_v1
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -126,7 +125,6 @@ func GPAshandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email
 	if err != nil {
 		return
 	}
-	fmt.Printf("gpas: %v\n", gpas)
 	c.JSON(http.StatusOK, gpas)
 }
 
