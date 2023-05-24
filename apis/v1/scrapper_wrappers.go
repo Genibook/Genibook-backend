@@ -150,18 +150,18 @@ func functionForGpashandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Req
 	}
 
 	if student_grade < 9 {
-		gpa, err := utils.GPAsOfMiddleSchoolers(grades)
+		// gpa, err := utils.GPAsOfMiddleSchoolers(grades)
 
-		if err != nil {
-			utils.APIPrintSpecificError("["+functionName+"]  GPAsOfMiddleSchoolers error", w, err, http.StatusInternalServerError)
-			return gpas, err
-		}
+		// if err != nil {
+		// 	utils.APIPrintSpecificError("["+functionName+"]  GPAsOfMiddleSchoolers error", w, err, http.StatusInternalServerError)
+		// 	return gpas, err
+		// }
 
-		gpas := map[string]float64{}
-		gpas["weighted"] = gpa
-		gpas["unweighted"] = gpa
+		// gpas := map[string]float64{}
+		// gpas["weighted"] = gpa
+		// gpas["unweighted"] = gpa
 
-		c.JSON(http.StatusOK, gpas)
+		c.JSON(http.StatusOK, gin.H{})
 	} else if student_grade >= 9 {
 		unweighted, weighted, err := utils.GimmeCurrGPAS(grades, history)
 
