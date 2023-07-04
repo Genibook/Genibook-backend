@@ -11,8 +11,10 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	r.LoadHTMLFiles("h_pp.html")
-	r.LoadHTMLFiles("h_howGPA.html")
+	r.Static("/book512512", "static/book512512.png")
+	r.Static("/book5757", "static/book5757.png")
+
+	r.LoadHTMLFiles("static/howGPA.html", "static/pp.html", "static/download.html")
 	//r.Use(api_v1.JsonLoggerMiddleware())
 
 	r.POST("/hi/", func(c *gin.Context) {
@@ -23,11 +25,11 @@ func main() {
 	})
 
 	r.GET("/pp/", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "h_pp.html", gin.H{})
+		ctx.HTML(http.StatusOK, "pp.html", gin.H{})
 	})
 
 	r.GET("/howGPA/", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "h_howGPA.html", gin.H{})
+		ctx.HTML(http.StatusOK, "howGPA.html", gin.H{})
 	})
 
 	r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))
