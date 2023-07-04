@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"path/filepath"
+	"strings"
 	api_v1 "webscrapper/apis/v1"
 
 	"github.com/gin-gonic/gin"
@@ -11,8 +13,7 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	r.Static("/book512512", "static/book512512.png")
-	r.Static("/book5757", "static/book5757.png")
+	r.Static("/images", "./images")
 
 	r.LoadHTMLFiles("static/howGPA.html", "static/pp.html", "static/download.html")
 	//r.Use(api_v1.JsonLoggerMiddleware())
@@ -24,12 +25,31 @@ func main() {
 
 	})
 
+	r.GET("/app/genibook.ipa", func(ctx *gin.Context) {
+		fileName := "genibook.ipa"
+		targetPath := filepath.Join("app/", fileName)
+		//This ckeck is for example, I not sure is it can prevent all possible filename attacks - will be much better if real filename will not come from user side. I not even tryed this code
+		if !strings.HasPrefix(filepath.Clean(targetPath), "app/") {
+			ctx.String(403, "Look like you attacking me")
+			return
+		}
+		//Seems this headers needed for some browsers (for example without this headers Chrome will download files as txt)
+		ctx.Header("Content-Description", "File Transfer")
+		ctx.Header("Content-Transfer-Encoding", "binary")
+		ctx.Header("Content-Disposition", "attachment; filename="+fileName)
+		ctx.Header("Content-Type", "application/octet-stream")
+		ctx.File(targetPath)
+	})
+
 	r.GET("/pp/", func(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "pp.html", gin.H{})
 	})
 
 	r.GET("/howGPA/", func(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "howGPA.html", gin.H{})
+	})
+	r.GET("/genibook/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "download.html", gin.H{})
 	})
 
 	r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))
