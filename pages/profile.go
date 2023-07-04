@@ -29,6 +29,10 @@ func ProfileData(c *colly.Collector, user int, school string) (models.Student, e
 		ID:            0,
 		Image64:       "N/A",
 	}
+	counselorTRindex := 2
+	ageTRindex := 4
+	birthdateTRindex := 5
+	lockerTRindex := 6
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		notecards := h.DOM.Find("table.notecard")
@@ -49,18 +53,18 @@ func ProfileData(c *colly.Collector, user int, school string) (models.Student, e
 
 				trs := student_demo_and_whereabouts.Find("tr.listroweven")
 				trs.Each(func(i int, tr *goquery.Selection) {
-					if i == 2 {
+					if i == counselorTRindex {
 						student.CounselorName = strings.Replace(strings.ReplaceAll(strings.ReplaceAll(tr.Find("span[style=\"font-weight: 600;\"]").Text(), "\n", ""), " ", ""), ",", ", ", 1)
-					} else if i == trs.Length()-3 {
+					} else if i == ageTRindex {
 						age, err := strconv.Atoi(tr.Find("td:nth-child(2)").Text())
 						if err != nil {
 							age = 0
 							log.Println("profile.go - age of student did not convert to int")
 						}
 						student.Age = age
-					} else if i == trs.Length()-2 {
+					} else if i == birthdateTRindex {
 						student.Birthday = tr.Find("td:nth-child(2)").Text()
-					} else if i == trs.Length()-1 {
+					} else if i == lockerTRindex {
 						student.Locker = tr.Find("td:nth-child(2)").Text()
 					}
 				})

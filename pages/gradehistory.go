@@ -85,18 +85,30 @@ func GradeHistoryData(c *colly.Collector, studentId string, school string) (map[
 func CurrentGradeHistoryData(c *colly.Collector, studentId string, school string) (map[string]string, error) {
 	currCourses := map[string]string{}
 	c.OnHTML("body", func(h *colly.HTMLElement) {
+		ATTCREDITSINDEX := 6
 		dom := h.DOM
 		table := dom.Find(".list")
+		th := table.Find("tbody>tr.listheading")
+		th.Each(func(i int, s *goquery.Selection) {
+			s.Find("td").Each(func(k int, td *goquery.Selection) {
+				text := utils.CleanAString(td.Text())
+				if strings.ToLower(text) == "att." {
+					ATTCREDITSINDEX = k
+				}
+			})
+		})
 		trs := table.Find("tbody>tr.listroweven, tbody>tr.listrowodd")
 		trs.Each(func(i int, s *goquery.Selection) {
 			name := ""
+			//att is something sus on one of the columns, it is a name, it is supposed to be like the given credits
+
 			att := ""
 
 			s.Find("td").Each(func(k int, td *goquery.Selection) {
 				switch k {
 				case 0:
 					name = utils.CleanAString(td.Text())
-				case 6:
+				case ATTCREDITSINDEX:
 					att = utils.CleanAString(td.Text())
 				}
 			})
