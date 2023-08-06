@@ -198,6 +198,8 @@ func GetGradeHistory(w http.ResponseWriter, r *http.Request, functionName string
 		}
 	}
 
+	//fmt.Printf("history: %v\n", history)
+
 	return history, nil
 }
 
