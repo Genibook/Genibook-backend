@@ -39,8 +39,24 @@ func ProfileData(c *colly.Collector, user int, school string) (models.Student, e
 		//fmt.Println(notecards.Length())
 		notecards.Each(func(i int, notecard *goquery.Selection) {
 			if i == user-1 {
+				//TODO: update format issues
 				table := notecard.Find("tbody table > tbody")
+				//TODO: so go to the profile page, rn its kidna like
+				/*
+					table := notecard.Find("tbody tr:nth-child(2) > td > table > tbody")
 
+					using this, we can see that until tbdoy theres a tr and then comments. My old code kinda gets the second and first child which is
+					 correct based on the comments
+					rn the thing i sthat there is only the "schedule" section, and that is the second nth child
+
+					theres also no more valigns so now its kinda like:
+
+					schedule_td :=  table.Find("tr > td:nth-child(2)")
+					student_demo_and_whereabouts := table.Find("tr> td > table.list > tbody")
+
+					we'll see at the start of the school year what they changed 💀
+
+				*/
 				schedule_td := table.Find("tr[valign=\"top\"] > td[valign=\"top\"]:nth-child(2)")
 				student_demo_and_whereabouts := table.Find("tr[valign=\"top\"] > td[valign=\"top\"]:nth-child(1) > table.list > tbody")
 
@@ -70,9 +86,53 @@ func ProfileData(c *colly.Collector, user int, school string) (models.Student, e
 				})
 
 				//left - schedule stuff
+				// the top half in the html code is correct, we are finding the first one, so i'll just use .Find not findAll()
 				top_half := schedule_td.Find("table.list > tbody > tr")
 
 				top_half.Each(func(i int, tr *goquery.Selection) {
+					// TODO: update thses cells.
+					/*
+							It's like three <tr></trs>s now.
+
+							the first one has three tds, and no longer spans, and then the first td is the profile picture (yeah so ig no longer in the student demo row/col? (is that even a thing now?)),
+						 	second is name and barcode?, and third is the grade thingy
+
+							first tr will look smth like:
+
+							tds = tr.Find("td") // we can use this cuz i chedk the html and nothing rly appears to have td othe rhtan the children
+							tds.Each(func(k int, td *goquery.Selection){
+								switch k{
+
+								}case 0{
+									// image getter code
+								}case 1{
+									//code to get name
+									// first name -> "td > div > div > span[style=\"font-weight: 100; color: #001E37\"]" text
+									// last name = td > div > div " text replace firstname
+
+								}case 2{
+									"td > span[style=\"font-size: 2em;\"]"
+									// same thing in the current code with i== 0 grade_int thingy
+								}
+							})
+
+
+							second tr is blank
+
+							third tr is student id and state id
+
+							strcutre tree:
+							td
+								div
+									student id
+										span style font-weight bold: literal id
+								div
+									state id
+										span style font-weight bold: literal id
+
+
+					*/
+
 					if i == 0 {
 						firstName := strings.ReplaceAll(tr.Find("td > span[style=\"font-weight: 100; color: #001E37\"]").Text(), "\n", "")
 						lastName := strings.ReplaceAll(strings.ReplaceAll(strings.Replace(tr.Find("td[style=\"font-size: 1.5em;\"]").Text(), firstName, "", 1), "\n", ""), " ", "")
