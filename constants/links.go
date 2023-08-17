@@ -46,6 +46,15 @@ var ConstantLinks = map[string]map[string]map[string]string{
 			"action":    "form",
 			"studentid": "",
 		},
+		"transcript": {
+			"tab1":               "studentdata",
+			"tab2":               "grading",
+			"tab3":               "transcripts",
+			"action":             "showPDF",
+			"studentid":          "",
+			"transcriptTemplate": "DEFAULTU",
+			"gpaDefinitionCode":  "",
+		},
 	},
 }
 

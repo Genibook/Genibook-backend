@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"webscrapper/constants"
+	"webscrapper/pages"
 	"webscrapper/utils"
 
 	"github.com/gin-gonic/gin"
@@ -241,4 +242,20 @@ func StudentIDHandlerV1(context *gin.Context, w http.ResponseWriter, r *http.Req
 	}
 
 	context.JSON(http.StatusOK, IDS)
+}
+
+func TranscriptHandlerV1(context *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	c, e := utils.InitAndLogin(email, password, highSchool)
+	utils.APIPrintSpecificError("[TranscriptHandlerV1]: Couldn't init/login", w, e, http.StatusInternalServerError)
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	utils.APIPrintSpecificError("[TranscriptHandlerV1]: Error getting student IDs", w, err, http.StatusInternalServerError)
+
+	studentIDString := IDS[userSelector-1]
+
+	pdfData, err := pages.GetPDFDataBytes(c, highSchool, studentIDString)
+	utils.APIPrintSpecificError("[TranscriptHandlerV1]: Error getting PDF bytes", w, err, http.StatusInternalServerError)
+
+	context.Data(http.StatusOK, "application/pdf", pdfData)
+
 }
