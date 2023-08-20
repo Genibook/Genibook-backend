@@ -147,6 +147,7 @@ func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, sch
 	return courseCodes, nil
 }
 
+// TODO rn we don't know anything abt this
 func GimmeMPs(c *colly.Collector, studentId string, school string) ([]string, error) {
 	mps := make([]string, 0)
 

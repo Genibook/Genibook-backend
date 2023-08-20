@@ -48,3 +48,8 @@ var ANotSussyGradeCellDivCount = 1
 var GradeCellThatHasNotGradedSubDivCount = 2
 var GradeCellThatIsJustNormaSubDivCount = 0
 var UngradedCellDivLength = 3
+
+var CounselorTRindex = 0
+var AgeTRindex = 1
+var BirthdateTRindex = 2
+var LockerTRindex = 6
