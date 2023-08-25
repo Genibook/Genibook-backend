@@ -49,7 +49,7 @@ var GradeCellThatHasNotGradedSubDivCount = 2
 var GradeCellThatIsJustNormaSubDivCount = 0
 var UngradedCellDivLength = 3
 
-var CounselorTRindex = 0
-var AgeTRindex = 1
-var BirthdateTRindex = 2
-var LockerTRindex = 6
+var CounselorTRindex = 1
+var AgeTRindex = 2
+var BirthdateTRindex = 3
+var LockerTRindex = 4
