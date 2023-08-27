@@ -92,7 +92,6 @@ func GetMPs(w http.ResponseWriter, r *http.Request, functionName string, email s
 		return mps, err
 	}
 
-	//TODO: this doesn't work rn without grades
 	mps, e = pages.GimmeMPs(c, IDS[userSelector-1], highSchool)
 	if e != nil {
 		return mps, err
@@ -116,6 +115,7 @@ func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, emai
 		return grades, err
 	}
 
+	//FIXME: 8/27/2023 checking under herere
 	weeklySumData, err := pages.GradebookData(c, IDS[userSelector-1], mp, highSchool)
 	if err != nil {
 		return grades, err
@@ -235,14 +235,18 @@ func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string,
 	if err != nil {
 		return courseAssignments, err
 	}
+
 	codesAndSections, err := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
 	if err != nil {
 		return courseAssignments, err
 	}
+
 	aCoursesAssignments := make([]models.Assignment, 0)
 	//fmt.Println(pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool))
 	for courseName := range codesAndSections {
 		aCoursesDict := codesAndSections[courseName]
+		//TODO: checked until here
+		//FIXME: 8/27/2023
 		aCoursesAssignments, err = pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
 		if err != nil {
 			return courseAssignments, err

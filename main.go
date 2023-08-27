@@ -33,13 +33,13 @@ func main() {
 	//Key
 	/*
 		✅ - all functions/code runs with new genesis
-		⚠️ - not all functions/code runs with new genesis
+		⚠️ - not all functions/code runs with new genesis (checking and not checking)
 		❌ - not got to yet.
 		✅💥 - code runs with existing genesis pages availble at commit date, however, there are some "cells"/data that don't exist yet.
 	*/
 
 	r.POST("/apiv1/student/", api_v1.MakeHandler(api_v1.StudentHandlerV1))                 //✅💥
-	r.POST("/apiv1/assignments/", api_v1.MakeHandler(api_v1.AssignmentHandlerV1))          //❌
+	r.POST("/apiv1/assignments/", api_v1.MakeHandler(api_v1.AssignmentHandlerV1))          //✅💥
 	r.POST("/apiv1/grades/", api_v1.MakeHandler(api_v1.GradesHandlerV1))                   //❌
 	r.POST("/apiv1/schedule/", api_v1.MakeHandler(api_v1.ScheduleAssignmentHandlerV1))     //❌
 	r.POST("/apiv1/profile/", api_v1.MakeHandler(api_v1.ProfileHandlerV1))                 //❌
@@ -47,7 +47,7 @@ func main() {
 	r.POST("/apiv1/gpas/", api_v1.MakeHandler(api_v1.GPAshandlerV1))                       //❌
 	r.POST("/apiv1/gpas_his/", api_v1.MakeHandler(api_v1.GPAHistoryHandlerV1))             //❌
 	r.POST("/apiv1/grade_of_students/", api_v1.MakeHandler(api_v1.StudentGradesHandlerV1)) //✅
-	r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))                         //⚠️
+	r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))                         //✅
 	r.POST("/apiv1/ids/", api_v1.MakeHandler(api_v1.StudentIDHandlerV1))                   //✅
 	r.GET("/apiv1/transcript", api_v1.MakeHandler(api_v1.TranscriptHandlerV1))             //✅
 

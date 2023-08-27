@@ -30,7 +30,9 @@ var ConstantLinks = map[string]map[string]map[string]string{
 			"studentid":        "",
 			"action":           "form",
 			"dateRange":        "",
+			"date":             "",
 			"courseAndSection": "",
+			"status":           "",
 		},
 		"history": {
 			"tab1":      "studentdata",

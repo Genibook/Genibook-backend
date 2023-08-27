@@ -12,14 +12,13 @@ import (
 	"github.com/gocolly/colly"
 )
 
-//TODO: FG is not a value in course assignments tab3
-
 func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) ([]models.Assignment, error) {
 	assignments := make([]models.Assignment, 0)
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
 		rows := dom.Find(".list > tbody>tr")
+
 		rows.Each(func(i int, row *goquery.Selection) {
 			if row.Children().Length() == constants.CourseSummaryRowLength && i != 0 {
 				aAssignment := models.Assignment{

@@ -96,7 +96,7 @@ func ProfileData(c *colly.Collector, user int, school string) (models.Student, e
 				})
 
 				//Schedule link stuff.
-				schedule_link, exists_schedule_link := notecard.Find("tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > div:nth-child(3) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > a:nth-child(1)").Attr("href")
+				schedule_link, exists_schedule_link := notecard.Find("tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > a:nth-child(1)").Attr("href")
 				if exists_schedule_link {
 					student.ScheduleLink = constants.ConstantLinks[school]["base"]["url"] + "/genesis/" + schedule_link
 				}
