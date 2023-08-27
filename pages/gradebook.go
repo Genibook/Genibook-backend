@@ -14,7 +14,7 @@ import (
 )
 
 func GradebookData(c *colly.Collector, studentId string, mpToView string, school string) (map[string]models.OneGrade, error) {
-	//TODO: TEST WITH Not Graded MP2 thingy CELL
+	//TODO: TEST WITH Not Graded MP2 thingy CELL idk what time i did not write this 8/27/2023
 	grades := map[string]models.OneGrade{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
