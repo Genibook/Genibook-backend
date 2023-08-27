@@ -105,7 +105,7 @@ func ProfileData(c *colly.Collector, user int, school string) (models.Student, e
 				table = notecard.Find("tbody tr:nth-child(2) > td > table.list > tbody")
 				trs = table.Find("tr.listrow")
 				trs.Each(func(i int, tr *goquery.Selection) {
-					//TODO we can migrate to a map that has keys as the names of the first child in td:nth child
+					//TODO: we can migrate to a map that has keys as the names of the first child in td:nth child
 					// then we can like have the values as functions that handles the goquery selection!~!
 					switch i {
 					case constants.CounselorTRindex:

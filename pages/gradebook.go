@@ -14,7 +14,7 @@ import (
 )
 
 func GradebookData(c *colly.Collector, studentId string, mpToView string, school string) (map[string]models.OneGrade, error) {
-	//TODO TEST WITH Not Graded MP2 thingy CELL
+	//TODO: TEST WITH Not Graded MP2 thingy CELL
 	grades := map[string]models.OneGrade{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
@@ -147,7 +147,7 @@ func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, sch
 	return courseCodes, nil
 }
 
-// TODO rn we don't know anything abt this
+// TODO: rn we don't know anything abt this
 func GimmeMPs(c *colly.Collector, studentId string, school string) ([]string, error) {
 	mps := make([]string, 0)
 

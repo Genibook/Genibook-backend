@@ -64,19 +64,6 @@ func LoginHandlerV1(context *gin.Context, w http.ResponseWriter, r *http.Request
 	}
 	w.WriteHeader(http.StatusOK)
 
-	// data := map[string]string{
-	// 	"name":  "John",
-	// 	"email": "john@example.com",
-	// }
-
-	// jsonData, err := json.Marshal(data)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// w.Header().Set("Content-Type", "application/json")
-	// w.Write(jsonData)
 }
 
 func ProfileHandlerV1(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {

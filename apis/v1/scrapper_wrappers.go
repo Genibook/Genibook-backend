@@ -92,7 +92,7 @@ func GetMPs(w http.ResponseWriter, r *http.Request, functionName string, email s
 		return mps, err
 	}
 
-	//TODO this doesn't work rn without grades
+	//TODO: this doesn't work rn without grades
 	mps, e = pages.GimmeMPs(c, IDS[userSelector-1], highSchool)
 	if e != nil {
 		return mps, err
