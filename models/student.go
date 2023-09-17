@@ -11,6 +11,7 @@ type Student struct {
 	Locker        string `json:"locker"`
 	CounselorName string `json:"counselor_name"`
 	ID            int    `json:"id"`
+	LunchBalance  string `json:"lunchbalance"`
 	Image64       string `json:"image64"`
 }
 
@@ -26,6 +27,8 @@ func (s *Student) ToDict() map[string]interface{} {
 	ret["locker"] = s.Locker
 	ret["counselor_name"] = s.CounselorName
 	ret["id"] = s.ID
+	ret["lunchbalance"] = s.LunchBalance
 	ret["image64"] = s.Image64
+
 	return ret
 }

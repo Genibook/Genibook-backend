@@ -52,4 +52,5 @@ var UngradedCellDivLength = 3
 var CounselorTRindex = 1
 var AgeTRindex = 2
 var BirthdateTRindex = 3
-var LockerTRindex = 4
+var LunchBalanceTrindex = 4
+var LockerTRindex = 5

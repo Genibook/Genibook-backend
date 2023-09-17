@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	api_v1 "webscrapper/apis/v1"
+	api "webscrapper/apis/v2"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,18 +38,31 @@ func main() {
 		✅💥 - code runs with existing genesis pages availble at commit date, however, there are some "cells"/data that don't exist yet.
 	*/
 
-	r.POST("/apiv1/student/", api_v1.MakeHandler(api_v1.StudentHandlerV1))                 //✅💥
-	r.POST("/apiv1/assignments/", api_v1.MakeHandler(api_v1.AssignmentHandlerV1))          //✅💥
-	r.POST("/apiv1/grades/", api_v1.MakeHandler(api_v1.GradesHandlerV1))                   //❌
-	r.POST("/apiv1/schedule/", api_v1.MakeHandler(api_v1.ScheduleAssignmentHandlerV1))     //❌
-	r.POST("/apiv1/profile/", api_v1.MakeHandler(api_v1.ProfileHandlerV1))                 //❌
-	r.POST("/apiv1/login/", api_v1.MakeHandler(api_v1.LoginHandlerV1))                     //✅
-	r.POST("/apiv1/gpas/", api_v1.MakeHandler(api_v1.GPAshandlerV1))                       //❌
-	r.POST("/apiv1/gpas_his/", api_v1.MakeHandler(api_v1.GPAHistoryHandlerV1))             //❌
-	r.POST("/apiv1/grade_of_students/", api_v1.MakeHandler(api_v1.StudentGradesHandlerV1)) //✅
-	r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))                         //✅
-	r.POST("/apiv1/ids/", api_v1.MakeHandler(api_v1.StudentIDHandlerV1))                   //✅
-	r.GET("/apiv1/transcript", api_v1.MakeHandler(api_v1.TranscriptHandlerV1))             //✅
+	// r.POST("/apiv1/student/", api_v1.MakeHandler(api_v1.StudentHandlerV1))                 //✅💥
+	// r.POST("/apiv1/assignments/", api_v1.MakeHandler(api_v1.AssignmentHandlerV1))          //✅💥
+	// r.POST("/apiv1/grades/", api_v1.MakeHandler(api_v1.GradesHandlerV1))                   //❌
+	// r.POST("/apiv1/schedule/", api_v1.MakeHandler(api_v1.ScheduleAssignmentHandlerV1))     //❌
+	// r.POST("/apiv1/profile/", api_v1.MakeHandler(api_v1.ProfileHandlerV1))                 //❌
+	// r.POST("/apiv1/login/", api_v1.MakeHandler(api_v1.LoginHandlerV1))                     //✅
+	// r.POST("/apiv1/gpas/", api_v1.MakeHandler(api_v1.GPAshandlerV1))                       //❌
+	// r.POST("/apiv1/gpas_his/", api_v1.MakeHandler(api_v1.GPAHistoryHandlerV1))             //❌
+	// r.POST("/apiv1/grade_of_students/", api_v1.MakeHandler(api_v1.StudentGradesHandlerV1)) //✅
+	// r.POST("/apiv1/mps/", api_v1.MakeHandler(api_v1.MpsHandlerV1))                         //✅
+	// r.POST("/apiv1/ids/", api_v1.MakeHandler(api_v1.StudentIDHandlerV1))                   //✅
+	// r.GET("/apiv1/transcript", api_v1.MakeHandler(api_v1.TranscriptHandlerV1))             //✅
+
+	r.POST("/api/student/", api.MakeHandler(api.StudentHandlerV1))                 //✅💥
+	r.POST("/api/assignments/", api.MakeHandler(api.AssignmentHandlerV1))          //✅💥
+	r.POST("/api/grades/", api.MakeHandler(api.GradesHandlerV1))                   //❌
+	r.POST("/api/schedule/", api.MakeHandler(api.ScheduleAssignmentHandlerV1))     //❌
+	r.POST("/api/profile/", api.MakeHandler(api.ProfileHandlerV1))                 //❌
+	r.POST("/api/login/", api.MakeHandler(api.LoginHandlerV1))                     //✅
+	r.POST("/api/gpas/", api.MakeHandler(api.GPAshandlerV1))                       //❌
+	r.POST("/api/gpas_his/", api.MakeHandler(api.GPAHistoryHandlerV1))             //❌
+	r.POST("/api/grade_of_students/", api.MakeHandler(api.StudentGradesHandlerV1)) //✅
+	r.POST("/api/mps/", api.MakeHandler(api.MpsHandlerV1))                         //✅
+	r.POST("/api/ids/", api.MakeHandler(api.StudentIDHandlerV1))                   //✅
+	r.GET("/api/transcript/", api.MakeHandler(api.TranscriptHandlerV1))            //✅
 
 	log.Fatal(r.Run(":6969"))
 
