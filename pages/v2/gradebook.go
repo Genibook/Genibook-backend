@@ -142,63 +142,6 @@ func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, sch
 			}
 		})
 
-		// divs.Each(func(i int, div *goquery.Selection) {
-		// 	courseName := fmt.Sprintf("class %d", i)
-		// 	subdivs := div.Find("div")
-
-		// 	subdivs.Each(func(k int, subdiv *goquery.Selection) {
-		// 		switch k {
-		// 		case 1:
-		// 			courseName = utils.CleanAString(subdiv.Find("div > span").Text())
-		// 			onclick, err := subdiv.Attr("onclick")
-		// 			if !err {
-		// 				log.Printf("Course on index %d does not have onclick attr\n", k)
-		// 				onclick = ""
-		// 			}
-		// 			onclick = strings.ReplaceAll(strings.ReplaceAll(onclick, "goToCourseSummary(", ""), ");", "")
-
-		// 			fmt.Printf("onclick: %v\n", onclick)
-		// 			fmt.Printf("courseName: %v\n", courseName)
-
-		// 			if onclick != "" {
-		// 				data := strings.Split(onclick, ",")
-		// 				courseCodes[courseName] = map[string]string{"code": strings.ReplaceAll(data[0], "'", ""), "section": strings.ReplaceAll(data[1], "'", "")}
-		// 			}
-
-		// 		}
-		// 	})
-		// })
-
-		//deprecated
-		// rows := dom.Find(".list > tbody>tr")
-
-		// rows.Each(func(i int, row *goquery.Selection) {
-		// 	if i != 0 {
-		// 		courseName := fmt.Sprintf("class %d", i)
-		// 		tds := row.Children()
-		// 		tds.Each(func(k int, s *goquery.Selection) {
-
-		// 			if k == 0 {
-		// 				courseName = strings.TrimSpace(strings.ReplaceAll(s.Text(), "\n", ""))
-
-		// 				//fmt.Println(courseName)
-
-		// 			} else if k == 2 {
-		// 				courseCodeNode := s.Find("tbody>tr>td:nth-child(1)")
-		// 				onclick, err := courseCodeNode.Attr("onclick")
-		// 				if !err {
-		// 					log.Printf("Course on index %d does not have onclick attr\n", k)
-		// 				}
-		// 				onclick = strings.ReplaceAll(strings.ReplaceAll(onclick, "goToCourseSummary(", ""), ");", "")
-
-		// 				data := strings.Split(onclick, ",")
-
-		// 				courseCodes[courseName] = map[string]string{"code": strings.ReplaceAll(data[0], "'", ""), "section": strings.ReplaceAll(data[1], "'", "")}
-		// 			}
-		// 		})
-
-		// 	}
-		// })
 	})
 
 	data := constants.ConstantLinks[school]["gradebook"]
