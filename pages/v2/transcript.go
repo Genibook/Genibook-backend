@@ -1,7 +1,7 @@
 package pages_v2
 
 import (
-	"webscrapper/constants"
+	constants "webscrapper/constants/v2"
 	"webscrapper/utils"
 
 	"github.com/gocolly/colly"

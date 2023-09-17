@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v2"
 	"webscrapper/models"
 )
 

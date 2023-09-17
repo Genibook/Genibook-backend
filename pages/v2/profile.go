@@ -6,7 +6,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v2"
 	"webscrapper/models"
 	"webscrapper/utils"
 

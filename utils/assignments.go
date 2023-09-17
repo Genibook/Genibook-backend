@@ -2,7 +2,7 @@ package utils
 
 import (
 	"strings"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v2"
 
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"

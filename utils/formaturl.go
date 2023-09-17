@@ -3,7 +3,7 @@ package utils
 import (
 	"log"
 	"net/url"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v2"
 )
 
 func FormatUrl(key string, school string) (string, error) {

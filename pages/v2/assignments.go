@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v2"
 	"webscrapper/models"
 	"webscrapper/utils"
 
@@ -17,7 +17,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
-		rows := dom.Find(".list > tbody>tr")
+		rows := dom.Find("table.list > tbody>tr")
 
 		rows.Each(func(i int, row *goquery.Selection) {
 			if row.Children().Length() == constants.CourseSummaryRowLength && i != 0 {

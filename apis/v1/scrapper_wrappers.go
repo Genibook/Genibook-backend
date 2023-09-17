@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v1"
 	"webscrapper/models"
 	pages "webscrapper/pages/v1"
 	"webscrapper/utils"

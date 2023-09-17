@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v1"
 	"webscrapper/pages/v1"
 	"webscrapper/utils"
 

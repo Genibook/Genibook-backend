@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	"time"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v1"
 
 	"github.com/gocolly/colly"
 	"github.com/joho/godotenv"

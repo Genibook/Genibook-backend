@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"webscrapper/constants"
+	constants "webscrapper/constants/v2"
 )
 
 func round(num float64) float64 {
