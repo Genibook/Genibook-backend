@@ -1,7 +1,6 @@
 package pages_v2
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -14,60 +13,84 @@ import (
 )
 
 func GradebookData(c *colly.Collector, studentId string, mpToView string, school string) (map[string]models.OneGrade, error) {
-	//TODO: TEST WITH Not Graded MP2 thingy CELL idk what time i did not write this 8/27/2023
+
 	grades := map[string]models.OneGrade{}
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
-		dom := h.DOM
-		rows := dom.Find(".list > tbody>tr")
-
-		rows.Each(func(i int, row *goquery.Selection) {
-
-			if i != 0 {
-				aGrade := models.OneGrade{
-					Grade:        0,
-					TeacherName:  "",
-					TeacherEmail: "",
-				}
-
-				courseName := fmt.Sprintf("class %d", i)
-				tds := row.Children()
-				tds.Each(func(k int, s *goquery.Selection) {
-					if k == 0 {
-						courseName = strings.TrimSpace(strings.ReplaceAll(s.Text(), "\n", ""))
-
-						//fmt.Println(courseName)
-
-					} else if k == 1 {
-						aName := strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(s.Text(), "Email:", ""), "\n", ""))
-
-						//fmt.Println(aName)
-						aGrade.TeacherName = aName
-						href, found := s.Find("a").Attr("href")
-						if !found {
-							log.Println("[gradebook.go] - teacher email not found")
-							href = ""
-						}
-						aGrade.TeacherEmail = strings.ReplaceAll(string(href), "mailto:", "")
-						//fmt.Println(aGrade.TeacherEmail)
-					} else if k == 2 {
-						grade := strings.TrimSpace(strings.ReplaceAll(s.Find("tbody>tr>td:nth-child(1)").Text(), "%", ""))
-						grade = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(grade, "\n", ""), "*PROJECTED", ""))
-
-						float_grade, err := strconv.ParseFloat(grade, 32)
-						if err != nil {
-							log.Println("[gradebook.go] - couldn't convert grade string to float grade")
-							log.Println(err)
-							float_grade = 0.0
-						}
-						aGrade.Grade = float64(float_grade)
-					}
-				})
-				grades[courseName] = aGrade
-
+		items := h.DOM.Find("table.notecard > tbody > tr:nth-child(2) > td > div.itemContainer > div.twoColFlex")
+		items.Each(func(i int, item *goquery.Selection) {
+			aGrade := models.OneGrade{
+				Grade:        0,
+				TeacherName:  "",
+				TeacherEmail: "",
 			}
+			L := item.Find("div.gradebookGrid")
+			R := item.Find("div.twoColGridItem")
+			utils.Assert((R.Length()+L.Length()) == 2, "GradeBookDataV2 gradebook.go")
 
+			grade := L.Find("span[style=\"font-size:20pt\"]")
+			class := R.Find("span.categorytab")
+			name := R.Find("div[style=\"font-size: 12pt\"]")
+			email, _ := name.Find("a").Attr("href")
+
+			float_grade, _ := strconv.ParseFloat(utils.CleanAString(strings.ReplaceAll(grade.Text(), "%", "")), 32)
+			aGrade.Grade = float_grade
+
+			courseName := utils.CleanAString(class.Text())
+			aGrade.TeacherName = utils.CleanAString(name.Text())
+			aGrade.TeacherEmail = utils.CleanAString(utils.CleanAString(strings.ReplaceAll(string(email), "mailto:", "")))
+			grades[courseName] = aGrade
 		})
+		// dom := h.DOM
+		// rows := dom.Find(".list > tbody>tr")
+
+		// rows.Each(func(i int, row *goquery.Selection) {
+
+		// 	if i != 0 {
+		// 		aGrade := models.OneGrade{
+		// 			Grade:        0,
+		// 			TeacherName:  "",
+		// 			TeacherEmail: "",
+		// 		}
+
+		// 		courseName := fmt.Sprintf("class %d", i)
+		// 		tds := row.Children()
+		// 		tds.Each(func(k int, s *goquery.Selection) {
+		// 			if k == 0 {
+		// 				courseName = strings.TrimSpace(strings.ReplaceAll(s.Text(), "\n", ""))
+
+		// 				//fmt.Println(courseName)
+
+		// 			} else if k == 1 {
+		// 				aName := strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(s.Text(), "Email:", ""), "\n", ""))
+
+		// 				//fmt.Println(aName)
+		// 				aGrade.TeacherName = aName
+		// 				href, found := s.Find("a").Attr("href")
+		// 				if !found {
+		// 					log.Println("[gradebook.go] - teacher email not found")
+		// 					href = ""
+		// 				}
+		// 				aGrade.TeacherEmail = strings.ReplaceAll(string(href), "mailto:", "")
+		// 				//fmt.Println(aGrade.TeacherEmail)
+		// 			} else if k == 2 {
+		// 				grade := strings.TrimSpace(strings.ReplaceAll(s.Find("tbody>tr>td:nth-child(1)").Text(), "%", ""))
+		// 				grade = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(grade, "\n", ""), "*PROJECTED", ""))
+
+		// 				float_grade, err := strconv.ParseFloat(grade, 32)
+		// 				if err != nil {
+		// 					log.Println("[gradebook.go] - couldn't convert grade string to float grade")
+		// 					log.Println(err)
+		// 					float_grade = 0.0
+		// 				}
+		// 				aGrade.Grade = float64(float_grade)
+		// 			}
+		// 		})
+		// 		grades[courseName] = aGrade
+
+		// 	}
+
+		// })
 	})
 
 	data := constants.ConstantLinks[school]["gradebook"]
