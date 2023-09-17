@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"webscrapper/constants"
-	"webscrapper/pages"
+	"webscrapper/pages/v1"
 	"webscrapper/utils"
 
 	"github.com/gin-gonic/gin"

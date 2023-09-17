@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"webscrapper/constants"
 	"webscrapper/models"
-	"webscrapper/pages"
+	pages "webscrapper/pages/v1"
 	"webscrapper/utils"
 
 	"github.com/gin-gonic/gin"
