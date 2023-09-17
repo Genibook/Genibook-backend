@@ -115,7 +115,6 @@ func GetGrades(w http.ResponseWriter, r *http.Request, functionName string, emai
 		return grades, err
 	}
 
-	//FIXME: 8/27/2023 checking under herere (need some more ideas on how to do this cuz i don't fucking want to check mutliple pages for some stupid ass course_grades)
 	weeklySumData, err := pages.GradebookData(c, IDS[userSelector-1], mp, highSchool)
 	if err != nil {
 		return grades, err
