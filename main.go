@@ -54,7 +54,7 @@ func main() {
 	r.POST("/api/student/", api.MakeHandler(api.StudentHandlerV2))                 //✅
 	r.POST("/api/assignments/", api.MakeHandler(api.AssignmentHandlerV2))          //✅
 	r.POST("/api/grades/", api.MakeHandler(api.GradesHandlerV2))                   //✅
-	r.POST("/api/schedule/", api.MakeHandler(api.ScheduleAssignmentHandlerV2))     //❌
+	r.POST("/api/schedule/", api.MakeHandler(api.ScheduleAssignmentHandlerV2))     //✅
 	r.POST("/api/profile/", api.MakeHandler(api.ProfileHandlerV2))                 //✅
 	r.POST("/api/login/", api.MakeHandler(api.LoginHandlerV2))                     //✅
 	r.POST("/api/gpas/", api.MakeHandler(api.GPAshandlerV2))                       //❌
