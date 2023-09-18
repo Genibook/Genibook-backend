@@ -70,33 +70,6 @@ func GradeHistoryData(c *colly.Collector, studentId string, school string) (map[
 							}
 						})
 
-						// case 0:
-
-						// 	course.SchoolYear = utils.CleanAString(td.Text())
-						// case 1:
-						// 	grade, err := strconv.Atoi(utils.CleanAString(td.Text()))
-						// 	if err != nil {
-						// 		return
-						// 	}
-						// 	course.Grade = grade
-						// case 2:
-						// 	course.Name = strings.TrimSpace(utils.CleanAString(td.Text()))
-						// case 3:
-						// 	course.School = utils.CleanAString(td.Text())
-						// case 4:
-						// 	course.FG = utils.CleanAString(td.Text())
-						// case 5:
-						// 	attempted, err := strconv.ParseFloat(utils.CleanAString(td.Text()), 64)
-						// 	if err != nil {
-						// 		return
-						// 	}
-						// 	course.Attempted = float32(attempted)
-						// case 6:
-						// 	earned, err := strconv.ParseFloat(utils.CleanAString(td.Text()), 64)
-						// 	if err != nil {
-						// 		return
-						// 	}
-						// 	course.Earned = float32(earned)
 					}
 				})
 

@@ -129,7 +129,7 @@ func GPAHistoryHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	// this can be tested during the summer - test 8/6/2023 works
+	//TODO: this can be tested during the summer - test 8/6/2023 works
 	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)
