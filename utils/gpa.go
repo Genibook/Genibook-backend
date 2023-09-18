@@ -49,6 +49,12 @@ func GPAsOfMiddleSchoolers(grades map[string]map[string]string) (gpa float64, er
 	for key := range grades {
 		grade := grades[key]
 		theGrade := grade["grade"]
+
+		if theGrade == "0" {
+			length--
+			continue
+		}
+
 		numGrade, err := strconv.ParseFloat(theGrade, 64)
 		if err != nil {
 			return gpa, err
@@ -164,6 +170,9 @@ func GimmeCurrGPAS(grades map[string]map[string]string, courses map[string]strin
 	for key := range grades {
 		grade := grades[key]
 		theGrade := grade["grade"]
+		if theGrade == "0" {
+			continue
+		}
 		class := key
 		numGrade, err := strconv.ParseFloat(theGrade, 64)
 		numGrade = math.Round(numGrade)
