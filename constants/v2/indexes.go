@@ -1,7 +1,12 @@
 package constants
 
+var DueIndex = 0
+var CourseIndex = 1
+var AssignmentIndex = 2
+var GradeIndex = 3
+
 var CourseSummaryAssignmentNameIndex = 4
-var CourseSummaryRowLength = 10
+var CourseSummaryRowLength = 5
 var CourseSummaryCategoryIndex = 3
 var CourseSummaryMPIndex = 0
 var CourseSummaryDueIndex = 1
@@ -44,10 +49,12 @@ Normal Cell
 */
 
 var SussyEetashGradeCellDivCount = 2
-var ANotSussyGradeCellDivCount = 1
-var GradeCellThatHasNotGradedSubDivCount = 2
+
+var NormalCell = 1
+var EttashCell = 2
+var UngradedCell = 3
 var GradeCellThatIsJustNormaSubDivCount = 0
-var UngradedCellDivLength = 3
+var GradeCellThatHasNotGradedSubDivCount = 2
 
 var CounselorTRindex = 1
 var AgeTRindex = 2

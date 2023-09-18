@@ -41,56 +41,7 @@ func GradebookData(c *colly.Collector, studentId string, mpToView string, school
 			aGrade.TeacherEmail = utils.CleanAString(utils.CleanAString(strings.ReplaceAll(string(email), "mailto:", "")))
 			grades[courseName] = aGrade
 		})
-		// dom := h.DOM
-		// rows := dom.Find(".list > tbody>tr")
 
-		// rows.Each(func(i int, row *goquery.Selection) {
-
-		// 	if i != 0 {
-		// 		aGrade := models.OneGrade{
-		// 			Grade:        0,
-		// 			TeacherName:  "",
-		// 			TeacherEmail: "",
-		// 		}
-
-		// 		courseName := fmt.Sprintf("class %d", i)
-		// 		tds := row.Children()
-		// 		tds.Each(func(k int, s *goquery.Selection) {
-		// 			if k == 0 {
-		// 				courseName = strings.TrimSpace(strings.ReplaceAll(s.Text(), "\n", ""))
-
-		// 				//fmt.Println(courseName)
-
-		// 			} else if k == 1 {
-		// 				aName := strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(s.Text(), "Email:", ""), "\n", ""))
-
-		// 				//fmt.Println(aName)
-		// 				aGrade.TeacherName = aName
-		// 				href, found := s.Find("a").Attr("href")
-		// 				if !found {
-		// 					log.Println("[gradebook.go] - teacher email not found")
-		// 					href = ""
-		// 				}
-		// 				aGrade.TeacherEmail = strings.ReplaceAll(string(href), "mailto:", "")
-		// 				//fmt.Println(aGrade.TeacherEmail)
-		// 			} else if k == 2 {
-		// 				grade := strings.TrimSpace(strings.ReplaceAll(s.Find("tbody>tr>td:nth-child(1)").Text(), "%", ""))
-		// 				grade = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(grade, "\n", ""), "*PROJECTED", ""))
-
-		// 				float_grade, err := strconv.ParseFloat(grade, 32)
-		// 				if err != nil {
-		// 					log.Println("[gradebook.go] - couldn't convert grade string to float grade")
-		// 					log.Println(err)
-		// 					float_grade = 0.0
-		// 				}
-		// 				aGrade.Grade = float64(float_grade)
-		// 			}
-		// 		})
-		// 		grades[courseName] = aGrade
-
-		// 	}
-
-		// })
 	})
 
 	data := constants.ConstantLinks[school]["gradebook"]
@@ -133,8 +84,9 @@ func GimmeCourseCodes(c *colly.Collector, studentId string, mpToView string, sch
 					log.Printf("Course on index %d does not have onclick attr\n", i)
 					onclick = ""
 				}
-				onclick = strings.ReplaceAll(strings.ReplaceAll(onclick, "goToCourseSummary(", ""), ");", "")
 
+				onclick = strings.ReplaceAll(strings.ReplaceAll(onclick, "showAssignmentsByMPAndCourse(", ""), ")", "")
+				//fmt.Printf("onclick: %v\n", onclick)
 				if onclick != "" {
 					data := strings.Split(onclick, ",")
 					courseCodes[courseName] = map[string]string{"code": strings.ReplaceAll(data[0], "'", ""), "section": strings.ReplaceAll(data[1], "'", "")}
