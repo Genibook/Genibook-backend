@@ -2,7 +2,6 @@ package pages_v2
 
 import (
 	"encoding/base64"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -115,7 +114,8 @@ func ProfileData(c *colly.Collector, user int, school string) (models.Student, e
 				}
 				trs.Each(func(i int, tr *goquery.Selection) {
 					rowName := strings.ToLower(strings.ReplaceAll(utils.CleanAString(tr.Find("td").Text()), ":", ""))
-					fmt.Printf("rowName: %v\n", rowName)
+					//fmt.Printf("rowName: %v\n", rowName)
+
 					idxs[rowName] = i
 				})
 
