@@ -240,13 +240,9 @@ func GetAssignments(w http.ResponseWriter, r *http.Request, functionName string,
 		return courseAssignments, err
 	}
 
-	aCoursesAssignments := make([]models.Assignment, 0)
-	//fmt.Println(pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool))
 	for courseName := range codesAndSections {
 		aCoursesDict := codesAndSections[courseName]
-		//TODO: checked until here
-		//FIXME: 8/27/2023
-		aCoursesAssignments, err = pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
+		aCoursesAssignments, err := pages.AssignmentsDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
 		if err != nil {
 			return courseAssignments, err
 		}
