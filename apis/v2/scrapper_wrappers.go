@@ -268,19 +268,14 @@ func GetSchedule(w http.ResponseWriter, r *http.Request, functionName string, em
 	if err != nil {
 		return scheduleAssignments, err
 	}
-	codesAndSections, err := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	// codesAndSections, err := pages.GimmeCourseCodes(c, IDS[userSelector-1], mp, highSchool)
+	// if err != nil {
+	// 	return scheduleAssignments, err
+	// }
+
+	scheduleAssignments, err = pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, highSchool)
 	if err != nil {
 		return scheduleAssignments, err
 	}
-	for courseName := range codesAndSections {
-		aCoursesDict := codesAndSections[courseName]
-		aScheduleAssignments, err := pages.ScheduleDataForACourse(c, IDS[userSelector-1], mp, aCoursesDict["code"], aCoursesDict["section"], courseName, highSchool)
-		if err != nil {
-			return scheduleAssignments, err
-		}
-		// scheduleAssignments[courseName] = aScheduleAssignments
-		scheduleAssignments[constants.ScheduleAssignmentsName] = append(scheduleAssignments[constants.ScheduleAssignmentsName], aScheduleAssignments...)
-	}
-
 	return scheduleAssignments, nil
 }

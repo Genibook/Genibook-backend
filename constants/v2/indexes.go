@@ -4,17 +4,7 @@ var DueIndex = 0
 var CourseIndex = 1
 var AssignmentIndex = 2
 var GradeIndex = 3
-
-var CourseSummaryAssignmentNameIndex = 4
-var CourseSummaryRowLength = 5
-var CourseSummaryCategoryIndex = 3
-var CourseSummaryMPIndex = 0
-var CourseSummaryDueIndex = 1
-var CourseSummaryTeacherIndex = 2
-var CourseSummaryGradeIndex = 5
-var CourseSummaryCommentIndex = 6
-var CourseSummaryPrevIndex = 7
-var CourseSummaryDocsIndex = 8
+var RowLength = 5
 
 //Cell types
 
@@ -53,8 +43,8 @@ var SussyEetashGradeCellDivCount = 2
 var NormalCell = 1
 var EttashCell = 2
 var UngradedCell = 3
-var GradeCellThatIsJustNormaSubDivCount = 0
-var GradeCellThatHasNotGradedSubDivCount = 2
+var SubDivCount = 0
+var NotGradedSubDivCount = 2
 
 var CounselorTRindex = 1
 var AgeTRindex = 2

@@ -21,7 +21,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 		rows := dom.Find("table.notecard > tbody > tr:nth-child(2) > td > div.desktop>table.list > tbody>tr")
 
 		rows.Each(func(i int, row *goquery.Selection) {
-			if row.Children().Length() == constants.CourseSummaryRowLength && i != 0 {
+			if row.Children().Length() == constants.RowLength && i != 0 {
 				aAssignment := models.Assignment{
 					CourseName:   "",
 					MP:           "",
@@ -75,7 +75,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 							if i == 0 {
 								aAssignment.Category = utils.CleanAString(div.Text())
 							} else if i == 1 {
-								aAssignment.Comment = utils.CleanAString(div.Text())
+								aAssignment.Description = utils.CleanAString(div.Text())
 							}
 						})
 					case constants.GradeIndex:
@@ -119,21 +119,22 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	return assignments, nil
 }
 
-func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView string, courseCode string, courseSection string, courseName string, school string) ([]models.ScheduleAssignment, error) {
-	assignments := make([]models.ScheduleAssignment, 0)
+func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView string, school string) (map[string][]models.ScheduleAssignment, error) {
+	assignments := map[string][]models.ScheduleAssignment{}
+	//assignments := make([]models.ScheduleAssignment, 0)
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		dom := h.DOM
-		rows := dom.Find(".list > tbody>tr")
+		rows := dom.Find("table.notecard > tbody > tr:nth-child(2) > td > div.desktop>table.list > tbody>tr")
 		rows.Each(func(i int, row *goquery.Selection) {
-			if row.Children().Length() == constants.CourseSummaryRowLength && i != 0 {
+			if row.Children().Length() == constants.RowLength && i != 0 {
 				notGraded := false
 				tds := row.Children()
-				tds.Each(func(i int, s *goquery.Selection) {
+				tds.Each(func(i int, td *goquery.Selection) {
 
-					if i == constants.CourseSummaryGradeIndex {
-						_, notGraded = processGradeCellForSchedule(s)
-
+					if i == constants.GradeIndex {
+						_, notGraded = processGradeCellForSchedule(td)
+						fmt.Println(notGraded)
 					}
 				})
 
@@ -147,22 +148,56 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 						Points:      "",
 					}
 
-					// stuff := basicDataExtractor(row, courseName)
-					// aAssignment.Category = stuff[constants.CourseSummaryNameCategory]
-					// aAssignment.Assignment = stuff[constants.CourseSummaryNameAssignment]
-					// aAssignment.Description = stuff[constants.CourseSummaryNameDescription]
-					// aAssignment.CourseName = courseName
+					tds := row.Children()
 
-					tds.Each(func(i int, s *goquery.Selection) {
-						if i == constants.CourseSummaryDueIndex {
-							_, date := processDueCell(s)
-							aAssignment.Date = strings.TrimSpace(date)
-						} else if i == constants.CourseSummaryGradeIndex {
-							aAssignment.Points, _ = processGradeCellForSchedule(s)
+					tds.Each(func(i int, td *goquery.Selection) {
+						switch i {
+						case constants.DueIndex:
+							divs := td.Find("div")
+							utils.Assert((divs.Length()) == 2, "AssignmentsData constants.DueIndex pages/v2/assignments.go")
+							divs.Each(func(i int, div *goquery.Selection) {
+								if i == 1 {
+									aAssignment.Date = utils.CleanAString(div.Text())
+
+								}
+							})
+						case constants.CourseIndex:
+							divs := td.Find("div")
+							utils.Assert((divs.Length()) == 2, "AssignmentsData constants.CourseIndex pages/v2/assignments.go")
+							divs.Each(func(i int, div *goquery.Selection) {
+								if i == 0 {
+									aAssignment.CourseName = utils.CleanAString(div.Text())
+								}
+
+							})
+						case constants.AssignmentIndex:
+							divs := td.Find("div")
+							aAssignment.Assignment = utils.CleanAString(td.Find("b").Text())
+							divs.Each(func(i int, div *goquery.Selection) {
+								if i == 0 {
+									aAssignment.Category = utils.CleanAString(div.Text())
+								} else if i == 1 {
+									if !strings.Contains(div.Text(), "Close") {
+										aAssignment.Description = utils.CleanAString(div.Text())
+									}
+
+								}
+							})
+						case constants.GradeIndex:
+							aAssignment.Points, _ = processGradeCellForSchedule(td)
+
 						}
 					})
+					//fmt.Printf("aAssignment.CourseName: %v\n", aAssignment.CourseName)
+					courseassigns, ok := assignments[aAssignment.CourseName]
+					if ok {
 
-					assignments = append(assignments, aAssignment)
+						assignments[aAssignment.CourseName] = append(courseassigns, aAssignment)
+					} else {
+						assignments[aAssignment.CourseName] = make([]models.ScheduleAssignment, 0)
+						assignments[aAssignment.CourseName] = append(courseassigns, aAssignment)
+					}
+
 				}
 
 			}
@@ -175,7 +210,7 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 	data := constants.ConstantLinks[school]["assignments"]
 	data["studentid"] = studentId
 	data["dateRange"] = mpToView
-	data["courseAndSection"] = fmt.Sprintf("%v:%v", courseCode, courseSection)
+	data["status"] = "UNGRADED"
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
 		return assignments, err
@@ -288,16 +323,18 @@ func processGradeCellForAssignment(s *goquery.Selection) (string, string) {
 	return gradeNum, gradePercent
 }
 
-func processGradeCellForSchedule(s *goquery.Selection) (string, bool) {
+func processGradeCellForSchedule(td *goquery.Selection) (string, bool) {
 	gradePoints := ""
 	notGraded := false
 
-	divs := s.Find("div")
+	divs := td.Find("div")
 	lenDivs := divs.Length()
+	//fmt.Println(divs.Text())
+	//fmt.Printf("lenDivs: %v\n", lenDivs)
 
 	if lenDivs == constants.UngradedCell {
 		subDivs := divs.Find("div")
-		if subDivs.Length() == constants.GradeCellThatHasNotGradedSubDivCount {
+		if subDivs.Length() == constants.NotGradedSubDivCount {
 			// ungraded cell
 			//fmt.Println("found un graded cell")
 			subDivs.Each(func(i int, s *goquery.Selection) {
@@ -311,19 +348,4 @@ func processGradeCellForSchedule(s *goquery.Selection) (string, bool) {
 	}
 
 	return gradePoints, notGraded
-}
-
-func processDueCell(s *goquery.Selection) (dayname string, date string) {
-	dayname = ""
-	date = ""
-
-	s.Find("div").Each(func(k int, l *goquery.Selection) {
-		if k == 0 {
-			dayname = l.Text()
-
-		} else if k == 1 {
-			date = l.Text()
-		}
-	})
-	return dayname, date
 }
