@@ -134,7 +134,7 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 
 					if i == constants.GradeIndex {
 						_, notGraded = processGradeCellForSchedule(td)
-						fmt.Println(notGraded)
+						//fmt.Println(notGraded)
 					}
 				})
 
