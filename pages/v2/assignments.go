@@ -154,7 +154,7 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 						switch i {
 						case constants.DueIndex:
 							divs := td.Find("div")
-							utils.Assert((divs.Length()) == 2, "AssignmentsData constants.DueIndex pages/v2/assignments.go")
+							utils.Assert((divs.Length()) == 2, "ScheduleDataForACourse constants.DueIndex pages/v2/assignments.go")
 							divs.Each(func(i int, div *goquery.Selection) {
 								if i == 1 {
 									aAssignment.Date = utils.CleanAString(div.Text())
@@ -163,7 +163,7 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 							})
 						case constants.CourseIndex:
 							divs := td.Find("div")
-							utils.Assert((divs.Length()) == 2, "AssignmentsData constants.CourseIndex pages/v2/assignments.go")
+							utils.Assert((divs.Length()) == 2, "ScheduleDataForACourse constants.CourseIndex pages/v2/assignments.go")
 							divs.Each(func(i int, div *goquery.Selection) {
 								if i == 0 {
 									aAssignment.CourseName = utils.CleanAString(div.Text())
