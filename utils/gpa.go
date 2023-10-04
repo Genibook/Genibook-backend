@@ -153,6 +153,11 @@ func GimmeHistoryGPAS(courses map[string]map[string]map[string]interface{}) (gpa
 		unweighted = round(sumOfGradesUnWeighted / sumOfCredits)
 		weighted = round(sumOfGradesWeighted / sumOfCredits)
 
+		if math.IsNaN(unweighted) || math.IsNaN(weighted) {
+			fmt.Println("[GimmeHistoryGPAs utils/gpa.go]: WARNING - one or both gpa is NaN:")
+			continue
+		}
+
 		gpaHistory[year] = map[string]float64{
 			"unweighted": unweighted,
 			"weighted":   weighted,
