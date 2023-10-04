@@ -77,23 +77,24 @@ func GimmeHistoryGPAS(courses map[string]map[string]map[string]interface{}) (gpa
 		sumOfGradesUnWeighted := 0.0
 		sumOfCredits := 0.0
 
-		// fmt.Printf("courses[year]: %v\n", courses[year])
+		//fmt.Printf("courses[year]: %v\n", courses[year])
 
 		for key := range courses[year] {
 			grade := courses[year][key]
 
 			theGrade := grade["FG"]
-
-			if theGrade == "P" {
-				continue
-			}
-
-			class := key
-
 			s, e := convertToString(theGrade)
 			if e != nil {
 				return gpaHistory, err
 			}
+
+			if theGrade == "P" {
+				continue
+			} else if theGrade == "AP" {
+				continue
+			}
+
+			class := key
 
 			numGrade, err := strconv.ParseFloat(s, 64)
 			if err != nil {
