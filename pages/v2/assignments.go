@@ -69,13 +69,17 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 
 						})
 					case constants.AssignmentIndex:
+						//fmt.Println("hi")
 						divs := td.Find("div")
 						aAssignment.Assignment = utils.CleanAString(td.Find("b").Text())
 						divs.Each(func(i int, div *goquery.Selection) {
 							if i == 0 {
 								aAssignment.Category = utils.CleanAString(div.Text())
 							} else if i == 1 {
-								aAssignment.Description = utils.CleanAString(div.Text())
+
+								if !strings.Contains(div.Text(), "Close") {
+									aAssignment.Description = utils.CleanAString(div.Text())
+								}
 							}
 						})
 					case constants.GradeIndex:
@@ -96,9 +100,11 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	data := constants.ConstantLinks[school]["assignments"]
 	data["studentid"] = studentId
 	data["dateRange"] = mpToView
+	//FIXME: 10/3/2023 I JUST DISCOVERED BIGGEST ERROR - I AM NOT COPYING ANOTHER DICT IN MEMORY IM ACTUALLY JUST USING THE DICT ITSELF AND CHANGING VALUES BIG ERROR
 	data["courseAndSection"] = fmt.Sprintf("%v:%v", courseCode, courseSection)
+	data["status"] = ""
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
+	fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
 
 	if err != nil {
 		log.Println(err)
@@ -191,7 +197,6 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 					//fmt.Printf("aAssignment.CourseName: %v\n", aAssignment.CourseName)
 					courseassigns, ok := assignments[aAssignment.CourseName]
 					if ok {
-
 						assignments[aAssignment.CourseName] = append(courseassigns, aAssignment)
 					} else {
 						assignments[aAssignment.CourseName] = make([]models.ScheduleAssignment, 0)
@@ -211,12 +216,13 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 	data["studentid"] = studentId
 	data["dateRange"] = mpToView
 	data["status"] = "UNGRADED"
+	data["courseAndSection"] = ""
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
 		return assignments, err
 	}
+	fmt.Printf("SCHEDULE URL: %v\n", assignemnts_url)
 
-	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
 	err = c.Visit(assignemnts_url)
 	if err != nil {
 		log.Println("[ScheduleDataForACourse]: Couldn't visit assignment url file assignments.go")
@@ -255,6 +261,7 @@ func processGradeCellForAssignment(s *goquery.Selection) (string, string) {
 	gradePercent := ""
 
 	nodes := s.Contents()
+	//fmt.Println(nodes)
 	for i, node := range nodes.Nodes {
 		if node.Type == html.TextNode {
 			// this one is ALWAYS the x / z
@@ -263,11 +270,8 @@ func processGradeCellForAssignment(s *goquery.Selection) (string, string) {
 					gradeNum = strings.ReplaceAll(utils.CleanAString(node.Data), " ", "")
 					//fmt.Printf("gradeNum: %v\n", gradeNum)
 				}
-
 			}
-
 		}
-
 	}
 
 	divs := s.Find("div")
@@ -306,6 +310,7 @@ func processGradeCellForAssignment(s *goquery.Selection) (string, string) {
 		}
 
 	} else if lenDivs == constants.UngradedCell {
+		//len divs is recursive which means it finds all divs in the subtree in our case it is going tobe 3 divs.
 		subDivs := divs.Find("div")
 		// ungraded cell
 		subDivs.Each(func(i int, s *goquery.Selection) {
