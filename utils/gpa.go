@@ -88,18 +88,22 @@ func GimmeHistoryGPAS(courses map[string]map[string]map[string]interface{}) (gpa
 				return gpaHistory, err
 			}
 
-			if theGrade == "P" {
-				continue
-			} else if theGrade == "AP" {
-				continue
-			}
-
-			class := key
-
 			numGrade, err := strconv.ParseFloat(s, 64)
 			if err != nil {
-				return gpaHistory, err
+				fmt.Printf("[GimmeHistoryGPAs utils/gpa.go]: WARNING - numGrade converted falsely:  %v\n", err.Error())
+				continue
+				// ngl we just skipping all that stuff skull
+
 			}
+			// if theGrade == "P" {
+			// 	continue
+			// } else if theGrade == "AP" {
+			// 	continue
+			// } else if theGrade == "PRO" {
+			// 	continue
+			// }
+
+			class := key
 
 			schoolGrade, err := convertToInt(grade["Grade"])
 			if err != nil {
