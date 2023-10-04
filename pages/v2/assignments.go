@@ -104,7 +104,7 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	data["courseAndSection"] = fmt.Sprintf("%v:%v", courseCode, courseSection)
 	data["status"] = ""
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
+	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
 
 	if err != nil {
 		log.Println(err)
@@ -221,7 +221,7 @@ func ScheduleDataForACourse(c *colly.Collector, studentId string, mpToView strin
 	if err != nil {
 		return assignments, err
 	}
-	fmt.Printf("SCHEDULE URL: %v\n", assignemnts_url)
+	//fmt.Printf("SCHEDULE URL: %v\n", assignemnts_url)
 
 	err = c.Visit(assignemnts_url)
 	if err != nil {
