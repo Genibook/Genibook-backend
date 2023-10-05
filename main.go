@@ -67,3 +67,78 @@ func main() {
 	log.Fatal(r.Run(":6969"))
 
 }
+
+/*
+
+
+// LoggerWithConfig instance a Logger middleware with config.
+func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
+	formatter := conf.Formatter
+	if formatter == nil {
+		formatter = defaultLogFormatter
+	}
+
+	out := conf.Output
+	if out == nil {
+		out = DefaultWriter
+	}
+
+	notlogged := conf.SkipPaths
+
+	isTerm := true
+
+	if w, ok := out.(*os.File); !ok || os.Getenv("TERM") == "dumb" ||
+		(!isatty.IsTerminal(w.Fd()) && !isatty.IsCygwinTerminal(w.Fd())) {
+		isTerm = false
+	}
+
+	var skip map[string]struct{}
+
+	if length := len(notlogged); length > 0 {
+		skip = make(map[string]struct{}, length)
+
+		for _, path := range notlogged {
+			skip[path] = struct{}{}
+		}
+	}
+
+	return func(c *Context) {
+		// Start timer
+		start := time.Now()
+		path := c.Request.URL.Path
+		raw := c.Request.URL.RawQuery
+
+		// Process request
+		c.Next()
+
+		// Log only when path is not being skipped
+		if _, ok := skip[path]; !ok {
+			param := LogFormatterParams{
+				Request: c.Request,
+				isTerm:  isTerm,
+				Keys:    c.Keys,
+			}
+
+			// Stop timer
+			param.TimeStamp = time.Now()
+			param.Latency = param.TimeStamp.Sub(start)
+
+			param.ClientIP = c.ClientIP()
+			param.Method = c.Request.Method
+			param.StatusCode = c.Writer.Status()
+			param.ErrorMessage = c.Errors.ByType(ErrorTypePrivate).String()
+
+			param.BodySize = c.Writer.Size()
+
+			if raw != "" {
+				path = path + "?" + raw
+			}
+
+			param.Path = path
+
+			fmt.Fprint(out, formatter(param))
+		}
+	}
+}
+
+*/
