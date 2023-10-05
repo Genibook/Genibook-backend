@@ -53,6 +53,8 @@ func main() {
 
 	log.Fatal(r.Run(":6969"))
 
+	//todo: only detect 1 student for now
+
 }
 
 /*
