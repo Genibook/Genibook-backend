@@ -114,11 +114,13 @@ func ProfileData(c *colly.Collector, studentId string, school string) (models.St
 				"lunch balance": constants.LunchBalanceTrindex,
 			}
 			trs.Each(func(i int, tr *goquery.Selection) {
-				rowName := strings.ToLower(strings.ReplaceAll(utils.CleanAString(tr.Find("td").Text()), ":", ""))
+				rowName := strings.ToLower(strings.ReplaceAll(utils.CleanAString(tr.Find("td:nth-child(1)").Text()), ":", ""))
 				//fmt.Printf("rowName: %v\n", rowName)
 
-				idxs[rowName] = i
+				idxs[strings.ToLower(rowName)] = i
+
 			})
+			//fmt.Println(idxs)
 
 			trs.Each(func(i int, tr *goquery.Selection) {
 
@@ -209,6 +211,8 @@ func StudentIds(c *colly.Collector, school string) ([]string, error) {
 	}
 	c.OnHTMLDetach("body")
 
+	//fmt.Printf("info: %v\n", info)
+
 	return info, err
 
 }
@@ -230,9 +234,11 @@ func WhatGradeIsStudent(c *colly.Collector, school string, studentIds []string) 
 					span := tr.Find("td:nth-child(3) > span[style='font-size: 2em;']")
 					grade, err := strconv.Atoi(utils.CleanAString(span.Text()))
 					if err != nil {
-						return
+						grades = append(grades, 0)
+					} else {
+						grades = append(grades, grade)
 					}
-					grades = append(grades, grade)
+
 				}
 
 			})
@@ -253,6 +259,8 @@ func WhatGradeIsStudent(c *colly.Collector, school string, studentIds []string) 
 			fmt.Println("[ERROR WhatGradeIsStudent() profile.go]: Couldn't visit profile url")
 		}
 	}
+
+	//fmt.Println(grades)
 
 	c.OnHTMLDetach("body")
 
