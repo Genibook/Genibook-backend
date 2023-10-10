@@ -57,7 +57,7 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 			}
 		}
 		if !kValid {
-			log.Println("Someone tried to use a sussy highschool")
+			log.Println("Someone tried to use a invalid highschool")
 			http.Error(w, "High School Not Available", http.StatusNoContent)
 			return
 		}
