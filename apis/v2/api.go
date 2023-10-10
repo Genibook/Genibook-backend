@@ -26,12 +26,14 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 
 		username := c.Query("username")
 		if len(username) == 0 {
+			log.Println("Username is empty")
 			http.Error(w, "Username is empty.", http.StatusNotAcceptable)
 			return
 		}
 
 		password := c.Query("password")
 		if len(password) == 0 {
+			log.Println("Password is empty")
 			http.Error(w, "Password is empty.", http.StatusNotAcceptable)
 			return
 		}
