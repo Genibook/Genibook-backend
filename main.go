@@ -46,9 +46,9 @@ func main() {
 	r.POST("/api/login/", api.MakeHandler(api.LoginHandlerV2))                     //✅
 	r.POST("/api/gpas/", api.MakeHandler(api.GPAshandlerV2))                       //✅
 	r.POST("/api/gpas_his/", api.MakeHandler(api.GPAHistoryHandlerV2))             //✅
-	r.POST("/api/grade_of_students/", api.MakeHandler(api.StudentGradesHandlerV2)) //❌
+	r.POST("/api/grade_of_students/", api.MakeHandler(api.StudentGradesHandlerV2)) //✅
 	r.POST("/api/mps/", api.MakeHandler(api.MpsHandlerV2))                         //✅
-	r.POST("/api/ids/", api.MakeHandler(api.StudentIDHandlerV2))                   //❌
+	r.POST("/api/ids/", api.MakeHandler(api.StudentIDHandlerV2))                   //✅
 	r.GET("/api/transcript/", api.MakeHandler(api.TranscriptHandlerV2))            //✅
 
 	log.Fatal(r.Run(":6969"))

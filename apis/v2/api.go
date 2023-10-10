@@ -24,6 +24,18 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 			return
 		}
 
+		username := c.Query("username")
+		if len(username) == 0 {
+			http.Error(w, "Username is empty.", http.StatusNotAcceptable)
+			return
+		}
+
+		password := c.Query("password")
+		if len(password) == 0 {
+			http.Error(w, "Password is empty.", http.StatusNotAcceptable)
+			return
+		}
+
 		userSelectorString := c.Query(constants.UserSelectorFormKey)
 		userSelector, err := strconv.Atoi(userSelectorString)
 		if err != nil {
