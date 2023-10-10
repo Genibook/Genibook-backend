@@ -222,5 +222,10 @@ func GimmeCurrGPAS(grades map[string]map[string]string, courses map[string]strin
 	unweighted = round(sumOfGradesUnWeighted / sumOfCredits)
 	weighted = round(sumOfGradesWeighted / sumOfCredits)
 
+	if math.IsNaN(unweighted) || math.IsNaN(weighted) {
+		fmt.Println("[GimmeHistoryGPAs utils/gpa.go]: WARNING - one or both gpa is NaN:")
+		return 0, 0, nil
+	}
+
 	return round(unweighted), round(weighted), nil
 }

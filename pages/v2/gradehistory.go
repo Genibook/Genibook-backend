@@ -4,7 +4,6 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	constants "webscrapper/constants/v2"
 	"webscrapper/models"
 	"webscrapper/utils"
 
@@ -82,8 +81,7 @@ func GradeHistoryData(c *colly.Collector, studentId string, school string) (map[
 
 		})
 	})
-
-	data := constants.ConstantLinks[school]["history"]
+	data := utils.CreateQueryMapCopy("history", school)
 	data["studentid"] = studentId
 	history_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
@@ -143,7 +141,7 @@ func CurrentGradeHistoryData(c *colly.Collector, studentId string, school string
 		})
 	})
 
-	data := constants.ConstantLinks[school]["currHistory"]
+	data := utils.CreateQueryMapCopy("currHistory", school)
 	data["studentid"] = studentId
 	history_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
