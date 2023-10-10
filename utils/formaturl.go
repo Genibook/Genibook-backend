@@ -6,6 +6,16 @@ import (
 	constants "webscrapper/constants/v2"
 )
 
+func CreateQueryMapCopy(key string, school string) map[string]string {
+	ret := map[string]string{}
+
+	for k, v := range constants.ConstantLinks[school][key] {
+		ret[k] = v
+	}
+
+	return ret
+}
+
 func FormatUrl(key string, school string) (string, error) {
 
 	endpoint := constants.ConstantLinks[school]["endpoint"]["url"]

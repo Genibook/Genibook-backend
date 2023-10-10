@@ -2,7 +2,6 @@ package api_v2
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	constants "webscrapper/constants/v2"
 	"webscrapper/models"
@@ -18,8 +17,13 @@ func GetIDs(userSelector int, c *colly.Collector, highSchool string, w http.Resp
 	if err != nil {
 		return make([]string, 0), err
 	}
+	if len(IDS) == 0 {
+		fmt.Printf("[ERROR GetIds() scrapper_wrappers.go]:Length of IDS from /api/ids is 0")
+		return make([]string, 0), http.ErrBodyNotAllowed
+	}
+
 	if userSelector > len(IDS) {
-		log.Printf("User selector index > len(available IDS) Length: %d\n", len(IDS))
+		fmt.Printf("User selector index > len(available IDS) Length: %d\n", len(IDS))
 		http.Error(w, fmt.Sprintf("User selector index > len(available IDS) Length: %d", len(IDS)), http.StatusNotAcceptable)
 		return make([]string, 0), http.ErrBodyNotAllowed
 	}
@@ -30,22 +34,30 @@ func GetProfile(w http.ResponseWriter, functionName string, email string, passwo
 	c, e := utils.InitAndLogin(email, password, highSchool)
 	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
 
-	if e != nil {
-		return models.Student{
-			Age:           0,
-			ImgURL:        "N/A",
-			StateID:       0,
-			Birthday:      "N/A",
-			ScheduleLink:  "N/A",
-			Name:          "N/A",
-			Grade:         0,
-			Locker:        "N/A",
-			CounselorName: "N/A",
-			ID:            0,
-			Image64:       "N/A",
-		}, e
+	fail := models.Student{
+		Age:           0,
+		ImgURL:        "N/A",
+		StateID:       0,
+		Birthday:      "N/A",
+		ScheduleLink:  "N/A",
+		Name:          "N/A",
+		Grade:         0,
+		Locker:        "N/A",
+		CounselorName: "N/A",
+		ID:            0,
+		Image64:       "N/A",
 	}
-	profile, err := pages.ProfileData(c, userSelector, highSchool)
+
+	if e != nil {
+		return fail, e
+	}
+
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return fail, e
+	}
+
+	profile, err := pages.ProfileData(c, IDS[userSelector-1], highSchool)
 	if err != nil {
 		return profile, err
 	}
@@ -53,12 +65,17 @@ func GetProfile(w http.ResponseWriter, functionName string, email string, passwo
 	return profile, nil
 }
 
-func GetGrade(w http.ResponseWriter, functionName string, email string, password string, highSchool string, userSelector int) (int, error) {
+func GetUserGradeFromSelector(w http.ResponseWriter, functionName string, email string, password string, highSchool string, userSelector int) (int, error) {
 
 	c, e := utils.InitAndLogin(email, password, highSchool)
 	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
 
-	grades, e := pages.WhatGradeIsStudent(c, highSchool)
+	IDS, err := GetIDs(userSelector, c, highSchool, w)
+	if err != nil {
+		return 0, e
+	}
+
+	grades, e := pages.WhatGradeIsStudent(c, highSchool, IDS)
 
 	if e != nil {
 		return 0, e
@@ -67,11 +84,16 @@ func GetGrade(w http.ResponseWriter, functionName string, email string, password
 	return grades[userSelector-1], nil
 }
 
-func GetListOfStudentGrade(w http.ResponseWriter, functionName string, email string, password string, highSchool string, userSelector int) ([]int, error) {
+func GetListOfStudentGrade(w http.ResponseWriter, functionName string, email string, password string, highSchool string) ([]int, error) {
 	c, e := utils.InitAndLogin(email, password, highSchool)
 	utils.APIPrintSpecificError(functionName+": Couldn't init/login", w, e, http.StatusInternalServerError)
 
-	grades, e := pages.WhatGradeIsStudent(c, highSchool)
+	IDS, err := GetIDs(1, c, highSchool, w)
+	if err != nil {
+		return make([]int, 0), e
+	}
+
+	grades, e := pages.WhatGradeIsStudent(c, highSchool, IDS)
 
 	if e != nil {
 		return make([]int, 0), e

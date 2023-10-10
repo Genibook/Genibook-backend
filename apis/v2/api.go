@@ -78,16 +78,6 @@ func ProfileHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, em
 	c.JSON(http.StatusOK, student)
 }
 
-func StudentGradesHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
-	functionName := "Func StudentGradesHandlerV2"
-	grades, err := GetListOfStudentGrade(w, functionName, email, password, highSchool, userSelector)
-	if err != nil {
-		utils.APIPrintSpecificError("["+functionName+"] GetListOfStudentGrade error", w, err, http.StatusInternalServerError)
-		return
-	}
-	c.JSON(http.StatusOK, grades)
-}
-
 // <note>: userSelector is 1st indexed meaning the first user is 1, second is 2.
 // Backend processes it like that
 func GradesHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
@@ -105,7 +95,7 @@ func GradesHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, ema
 
 func GPAshandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	functionName := "Func GPAshandlerV2"
-	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
+	student_grade, err := GetUserGradeFromSelector(w, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		return
 	}
@@ -119,7 +109,7 @@ func GPAshandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, email
 func GPAHistoryHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	functionName := "Func GPAHistoryHandlerV2"
 
-	student_grade, err := GetGrade(w, functionName, email, password, highSchool, userSelector)
+	student_grade, err := GetUserGradeFromSelector(w, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		return
 	}
@@ -217,6 +207,18 @@ func MpsHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, email 
 		return
 	}
 	c.JSON(http.StatusOK, mps)
+}
+
+func StudentGradesHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
+	functionName := "Func StudentGradesHandlerV2"
+	grades, err := GetListOfStudentGrade(w, functionName, email, password, highSchool)
+
+	if err != nil {
+		utils.APIPrintSpecificError("["+functionName+"] GetListOfStudentGrade error", w, err, http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, grades)
 }
 
 func StudentIDHandlerV2(context *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {

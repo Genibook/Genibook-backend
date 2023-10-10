@@ -1,7 +1,6 @@
 package pages_v2
 
 import (
-	constants "webscrapper/constants/v2"
 	"webscrapper/utils"
 
 	"github.com/gocolly/colly"
@@ -32,8 +31,7 @@ func GetPDFDataBytes(c *colly.Collector, school string, id string) ([]byte, erro
 
 		// fmt.Printf("PDF saved as %s\n", pdfFilename)
 	})
-
-	data := constants.ConstantLinks[school]["transcript"]
+	data := utils.CreateQueryMapCopy("transcript", school)
 	data["studentid"] = id
 	url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
