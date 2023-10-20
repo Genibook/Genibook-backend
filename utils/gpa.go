@@ -5,7 +5,6 @@ import (
 	"math"
 	"regexp"
 	"strconv"
-	"strings"
 	constants "webscrapper/constants/v2"
 )
 
@@ -110,7 +109,7 @@ func GimmeHistoryGPAS(courses map[string]map[string]map[string]interface{}) (gpa
 				return gpaHistory, err
 			}
 
-			matched, err := regexp.MatchString(constants.DetermineWeightedOrNotRegrexPattern, strings.ToLower(class))
+			matched, err := regexp.MatchString(constants.DetermineWeightedOrNotRegrexPattern, class)
 			if err != nil {
 				return gpaHistory, err
 			}
@@ -189,7 +188,7 @@ func GimmeCurrGPAS(grades map[string]map[string]string, courses map[string]strin
 		if err != nil {
 			return unweighted, weighted, err
 		}
-		matched, err := regexp.MatchString(constants.DetermineWeightedOrNotRegrexPattern, strings.ToLower(class))
+		matched, err := regexp.MatchString(constants.DetermineWeightedOrNotRegrexPattern, class)
 		if err != nil {
 			return unweighted, weighted, err
 		}

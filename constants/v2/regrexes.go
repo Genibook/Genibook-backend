@@ -1,3 +1,4 @@
 package constants
 
-var DetermineWeightedOrNotRegrexPattern = `(honors|^(h-)|h$|honor|^ap)`
+// English Language AP composition.
+var DetermineWeightedOrNotRegrexPattern = `(Honors|^(H-)|H$|Honor|AP)`
