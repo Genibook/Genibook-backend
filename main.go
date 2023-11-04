@@ -99,9 +99,10 @@ func Logger() gin.HandlerFunc {
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 
-	r := gin.New()
-	r.Use(gin.Recovery())
-	r.Use(Logger())
+	//r := gin.New()
+	// r.Use(gin.Recovery())
+	// r.Use(Logger())
+	r := gin.Default()
 
 	r.LoadHTMLFiles("static/howGPA.html", "static/pp.html")
 	//r.Use(api_v1.JsonLoggerMiddleware())
