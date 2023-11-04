@@ -1,16 +1,107 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"time"
 	api "webscrapper/apis/v2"
 
 	"github.com/gin-gonic/gin"
 )
 
+var defaultLogFormatter = func(param gin.LogFormatterParams) string {
+	var statusColor, methodColor, resetColor string
+	if param.IsOutputColor() {
+		statusColor = param.StatusCodeColor()
+		methodColor = param.MethodColor()
+		resetColor = param.ResetColor()
+	}
+
+	if param.Latency > time.Minute {
+		param.Latency = param.Latency.Truncate(time.Second)
+	}
+	return fmt.Sprintf("[GIN] %v |%s %3d %s| %13v | %15s |%s %-7s %s %#v\n%s",
+		param.TimeStamp.Format("2006/01/02 - 15:04:05"),
+		statusColor, param.StatusCode, resetColor,
+		param.Latency,
+		param.ClientIP,
+		methodColor, param.Method, resetColor,
+		param.Path,
+		param.ErrorMessage,
+	)
+}
+
+func LoggerWithConfig(conf gin.LoggerConfig) gin.HandlerFunc {
+	formatter := conf.Formatter
+	if formatter == nil {
+		formatter = defaultLogFormatter
+	}
+
+	out := conf.Output
+	if out == nil {
+		out = gin.DefaultWriter
+	}
+
+	notlogged := conf.SkipPaths
+
+	var skip map[string]struct{}
+
+	if length := len(notlogged); length > 0 {
+		skip = make(map[string]struct{}, length)
+
+		for _, path := range notlogged {
+			skip[path] = struct{}{}
+		}
+	}
+
+	return func(c *gin.Context) {
+		// Start timer
+		start := time.Now()
+		path := c.Request.URL.Path
+		//raw := c.Request.URL.RawQuery
+
+		// Process request
+		c.Next()
+
+		// Log only when path is not being skipped
+		if _, ok := skip[path]; !ok {
+			param := gin.LogFormatterParams{
+				Request: c.Request,
+				Keys:    c.Keys,
+			}
+
+			// Stop timer
+			param.TimeStamp = time.Now()
+			param.Latency = param.TimeStamp.Sub(start)
+
+			param.ClientIP = c.ClientIP()
+			param.Method = c.Request.Method
+			param.StatusCode = c.Writer.Status()
+			param.ErrorMessage = c.Errors.ByType(gin.ErrorTypePrivate).String()
+
+			param.BodySize = c.Writer.Size()
+
+			// if raw != "" {
+			// 	path = path + "?" + raw
+			// }
+
+			param.Path = path
+
+			fmt.Fprint(out, formatter(param))
+		}
+	}
+}
+func Logger() gin.HandlerFunc {
+	return LoggerWithConfig(gin.LoggerConfig{})
+}
+
 func main() {
 	gin.SetMode(gin.ReleaseMode)
-	r := gin.Default()
+
+	r := gin.New()
+	r.Use(gin.Recovery())
+	r.Use(Logger())
 
 	r.LoadHTMLFiles("static/howGPA.html", "static/pp.html")
 	//r.Use(api_v1.JsonLoggerMiddleware())
@@ -61,73 +152,5 @@ func main() {
 
 
 // LoggerWithConfig instance a Logger middleware with config.
-func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
-	formatter := conf.Formatter
-	if formatter == nil {
-		formatter = defaultLogFormatter
-	}
-
-	out := conf.Output
-	if out == nil {
-		out = DefaultWriter
-	}
-
-	notlogged := conf.SkipPaths
-
-	isTerm := true
-
-	if w, ok := out.(*os.File); !ok || os.Getenv("TERM") == "dumb" ||
-		(!isatty.IsTerminal(w.Fd()) && !isatty.IsCygwinTerminal(w.Fd())) {
-		isTerm = false
-	}
-
-	var skip map[string]struct{}
-
-	if length := len(notlogged); length > 0 {
-		skip = make(map[string]struct{}, length)
-
-		for _, path := range notlogged {
-			skip[path] = struct{}{}
-		}
-	}
-
-	return func(c *Context) {
-		// Start timer
-		start := time.Now()
-		path := c.Request.URL.Path
-		raw := c.Request.URL.RawQuery
-
-		// Process request
-		c.Next()
-
-		// Log only when path is not being skipped
-		if _, ok := skip[path]; !ok {
-			param := LogFormatterParams{
-				Request: c.Request,
-				isTerm:  isTerm,
-				Keys:    c.Keys,
-			}
-
-			// Stop timer
-			param.TimeStamp = time.Now()
-			param.Latency = param.TimeStamp.Sub(start)
-
-			param.ClientIP = c.ClientIP()
-			param.Method = c.Request.Method
-			param.StatusCode = c.Writer.Status()
-			param.ErrorMessage = c.Errors.ByType(ErrorTypePrivate).String()
-
-			param.BodySize = c.Writer.Size()
-
-			if raw != "" {
-				path = path + "?" + raw
-			}
-
-			param.Path = path
-
-			fmt.Fprint(out, formatter(param))
-		}
-	}
-}
 
 */
