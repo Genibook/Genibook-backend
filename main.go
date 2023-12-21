@@ -120,36 +120,18 @@ func main() {
 		ctx.HTML(http.StatusOK, "howGPA.html", gin.H{})
 	})
 
-	//Key
-	/*
-		✅ - all functions/code runs with new genesis
-		⚠️ - not all functions/code runs with new genesis (checking and not checking)
-		❌ - not got to yet.
-		✅💥 - code runs with existing genesis pages availble at commit date, however, there are some "cells"/data that don't exist yet.
-	*/
-
-	r.POST("/api/student/", api.MakeHandler(api.StudentHandlerV2))                 //✅
-	r.POST("/api/assignments/", api.MakeHandler(api.AssignmentHandlerV2))          //✅
-	r.POST("/api/grades/", api.MakeHandler(api.GradesHandlerV2))                   //✅
-	r.POST("/api/schedule/", api.MakeHandler(api.ScheduleAssignmentHandlerV2))     //✅
-	r.POST("/api/profile/", api.MakeHandler(api.ProfileHandlerV2))                 //✅
-	r.POST("/api/login/", api.MakeHandler(api.LoginHandlerV2))                     //✅
-	r.POST("/api/gpas/", api.MakeHandler(api.GPAshandlerV2))                       //✅
-	r.POST("/api/gpas_his/", api.MakeHandler(api.GPAHistoryHandlerV2))             //✅
-	r.POST("/api/grade_of_students/", api.MakeHandler(api.StudentGradesHandlerV2)) //✅
-	r.POST("/api/mps/", api.MakeHandler(api.MpsHandlerV2))                         //✅
-	r.POST("/api/ids/", api.MakeHandler(api.StudentIDHandlerV2))                   //✅
-	r.GET("/api/transcript/", api.MakeHandler(api.TranscriptHandlerV2))            //✅
+	r.POST("/api/student/", api.MakeHandler(api.StudentHandlerV2))
+	r.POST("/api/assignments/", api.MakeHandler(api.AssignmentHandlerV2))
+	r.POST("/api/grades/", api.MakeHandler(api.GradesHandlerV2))
+	r.POST("/api/schedule/", api.MakeHandler(api.ScheduleAssignmentHandlerV2))
+	r.POST("/api/profile/", api.MakeHandler(api.ProfileHandlerV2))
+	r.POST("/api/login/", api.MakeHandler(api.LoginHandlerV2))
+	r.POST("/api/gpas/", api.MakeHandler(api.GPAshandlerV2))
+	r.POST("/api/gpas_his/", api.MakeHandler(api.GPAHistoryHandlerV2))
+	r.POST("/api/grade_of_students/", api.MakeHandler(api.StudentGradesHandlerV2))
+	r.POST("/api/mps/", api.MakeHandler(api.MpsHandlerV2))
+	r.POST("/api/ids/", api.MakeHandler(api.StudentIDHandlerV2))
+	r.GET("/api/transcript/", api.MakeHandler(api.TranscriptHandlerV2))
 
 	log.Fatal(r.Run(":6969"))
-
-	//todo: only detect 1 student for now
-
 }
-
-/*
-
-
-// LoggerWithConfig instance a Logger middleware with config.
-
-*/
