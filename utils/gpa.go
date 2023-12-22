@@ -184,7 +184,7 @@ func GimmeCurrGPAS(grades map[string]map[string]string, courses map[string]strin
 		}
 		class := key
 		numGrade, err := strconv.ParseFloat(theGrade, 64)
-		numGrade = math.Round(numGrade)
+		//numGrade = math.Round(numGrade)
 		if err != nil {
 			return unweighted, weighted, err
 		}
@@ -201,7 +201,7 @@ func GimmeCurrGPAS(grades map[string]map[string]string, courses map[string]strin
 
 		if matched {
 			sumOfGradesUnWeighted += numGrade * cred
-			numGrade += 5
+			numGrade += 5.0
 			sumOfGradesWeighted += numGrade * cred
 
 		} else {
