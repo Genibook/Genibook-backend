@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for genibook-backend on 2024-02-10T12:14:05-05:00
+# fly.toml app configuration file generated for genibook-backend-winter-frost-9064-solitary-voice-9775 on 2024-02-10T12:51:29-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'genibook-backend'
+app = 'genibook-backend-winter-frost-9064-solitary-voice-9775'
 primary_region = 'iad'
 
 [build]
@@ -11,10 +11,10 @@ primary_region = 'iad'
   buildpacks = ['gcr.io/paketo-buildpacks/go']
 
 [env]
-  PORT = '6969'
+  PORT = '8080'
 
 [http_service]
-  internal_port = 6969
+  internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true

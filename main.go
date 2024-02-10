@@ -16,7 +16,7 @@ func main() {
 	// r.Use(Logger())
 	r := gin.Default()
 
-	r.LoadHTMLFiles("static/howGPA.html", "static/pp.html")
+	r.LoadHTMLFiles("./static/howGPA.html", "./static/pp.html")
 	//r.Use(api_v1.JsonLoggerMiddleware())
 
 	r.POST("/hi/", func(c *gin.Context) {
