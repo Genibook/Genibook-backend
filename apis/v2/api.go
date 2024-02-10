@@ -254,6 +254,9 @@ func TranscriptHandlerV2(context *gin.Context, w http.ResponseWriter, r *http.Re
 	IDS, err := GetIDs(userSelector, c, highSchool, w)
 	utils.APIPrintSpecificError("[TranscriptHandlerV2]: Error getting student IDs", w, err, http.StatusInternalServerError)
 
+	if err != nil {
+		return
+	}
 	studentIDString := IDS[userSelector-1]
 
 	pdfData, err := pages.GetPDFDataBytes(c, highSchool, studentIDString)
