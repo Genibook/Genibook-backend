@@ -21,6 +21,9 @@ primary_region = 'iad'
   min_machines_running = 0
   processes = ['app']
 
+[build.args]
+  BP_KEEP_FILES = "assets/*:static/*"
+
 [[vm]]
   cpu_kind = 'shared'
   cpus = 1
