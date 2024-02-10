@@ -3,7 +3,7 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'genibook-backend-winter-frost-9064-solitary-voice-9775'
+app = 'genibook-backend'
 primary_region = 'iad'
 
 [build]
