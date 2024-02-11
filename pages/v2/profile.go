@@ -180,10 +180,11 @@ func StudentIds(c *colly.Collector, school string) ([]string, error) {
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		students := h.DOM.Find("div > div.selectStudent > div > ul > li.selectStudentItem")
 		//fmt.Println(h.DOM.Html())
-		fmt.Println(students.Length())
+		log.Print(students.Length())
+		log.Println(" <- ID's length")
 		//fmt.Println(students.Length())
 		students.Each(func(i int, s *goquery.Selection) {
-			fmt.Println(s.Html())
+			//fmt.Println(s.Html())
 			val, _ := s.Find("a").Attr("onclick")
 			//fmt.Println(val)
 			studentId := strings.Split(val, "'")
