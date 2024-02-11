@@ -68,7 +68,7 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 
 func LoginHandlerV2(context *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	c := utils.Init_colly()
-	e := utils.Login(c, email, password, highSchool)
+	_, e := utils.Login(c, email, password, highSchool)
 
 	if e != nil {
 		log.Println("Func Login Hanlder - Incorrect Password and Username <Note: It is OK if this happens>")
@@ -133,7 +133,6 @@ func GPAHistoryHandlerV2(c *gin.Context, w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	//TODO: this can be tested during the summer - test 8/6/2023 works
 	history, err := GetGradeHistory(w, r, functionName, email, password, highSchool, userSelector)
 	if err != nil {
 		utils.APIPrintSpecificError("["+functionName+"]  GetGradeHistory error", w, err, http.StatusInternalServerError)

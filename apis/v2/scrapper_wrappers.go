@@ -2,6 +2,7 @@ package api_v2
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	constants "webscrapper/constants/v2"
 	"webscrapper/models"
@@ -18,12 +19,12 @@ func GetIDs(userSelector int, c *colly.Collector, highSchool string, w http.Resp
 		return make([]string, 0), err
 	}
 	if len(IDS) == 0 {
-		fmt.Printf("[ERROR GetIds() scrapper_wrappers.go]:Length of IDS from /api/ids is 0")
+		log.Printf("[ERROR GetIds() scrapper_wrappers.go]:Length of IDS from /api/ids is 0 \n")
 		return make([]string, 0), http.ErrBodyNotAllowed
 	}
 
 	if userSelector > len(IDS) {
-		fmt.Printf("User selector index > len(available IDS) Length: %d\n", len(IDS))
+		log.Printf("User selector index > len(available IDS) Length: %d\n", len(IDS))
 		http.Error(w, fmt.Sprintf("User selector index > len(available IDS) Length: %d", len(IDS)), http.StatusNotAcceptable)
 		return make([]string, 0), http.ErrBodyNotAllowed
 	}

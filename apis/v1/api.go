@@ -54,7 +54,7 @@ func MakeHandler(fn func(*gin.Context, http.ResponseWriter, *http.Request, strin
 
 func LoginHandlerV1(context *gin.Context, w http.ResponseWriter, r *http.Request, email string, password string, highSchool string, userSelector int) {
 	c := utils.Init_colly()
-	e := utils.Login(c, email, password, highSchool)
+	_, e := utils.Login(c, email, password, highSchool)
 
 	if e != nil {
 		log.Println("Func Login Hanlder - Incorrect Password and Username <Note: It is OK if this happens>")

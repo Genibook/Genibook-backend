@@ -3,6 +3,7 @@ package pages_v2
 import (
 	"encoding/base64"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	constants "webscrapper/constants/v2"
@@ -60,7 +61,7 @@ func ProfileData(c *colly.Collector, studentId string, school string) (models.St
 						case 2:
 							grade_int, err := strconv.Atoi(td.Find("span[style=\"font-size: 2em;\"]").Text())
 							if err != nil {
-								fmt.Println("[ERROR ProfileData() profile.go]- grade did not convert to int")
+								log.Println("[ERROR ProfileData() profile.go]- grade did not convert to int")
 								grade_int = 0
 							}
 							student.Grade = grade_int
@@ -77,7 +78,7 @@ func ProfileData(c *colly.Collector, studentId string, school string) (models.St
 							student_id_int, err := strconv.Atoi(id)
 							if err != nil {
 								student_id_int = 0
-								fmt.Println("[ERROR ProfileData() profile.go] - student id did not convert to int")
+								log.Println("[ERROR ProfileData() profile.go] - student id did not convert to int")
 
 							}
 							student.ID = student_id_int
@@ -86,7 +87,7 @@ func ProfileData(c *colly.Collector, studentId string, school string) (models.St
 							student_id_int, err := strconv.Atoi(id)
 							if err != nil {
 								student_id_int = 0
-								fmt.Println("[ERROR ProfileData() profile.go] - state id did not convert to int")
+								log.Println("[ERROR ProfileData() profile.go] - state id did not convert to int")
 							}
 							student.StateID = student_id_int
 						}
@@ -131,7 +132,7 @@ func ProfileData(c *colly.Collector, studentId string, school string) (models.St
 					age, err := strconv.Atoi(tr.Find("td:nth-child(2)").Text())
 					if err != nil {
 						age = 0
-						fmt.Println("[ERROR ProfileData() profile.go] - age of student did not convert to int")
+						log.Println("[ERROR ProfileData() profile.go] - age of student did not convert to int")
 					}
 					student.Age = age
 				case idxs["birthdate"]:
@@ -146,15 +147,12 @@ func ProfileData(c *colly.Collector, studentId string, school string) (models.St
 
 		})
 	})
-	// deteaches this thing, can be used later in functions maybe!
 
-	// redo this to do dynamic
-	//TODO: 10/10/2023 redo everything into this safe thingy
 	data := utils.CreateQueryMapCopy("profile", school)
 	data["studentid"] = studentId
 	profile_url, err := utils.FormatDynamicUrl(data, school)
 	if err != nil {
-		fmt.Printf("[ERROR ProfileData() profile.go]: %v\n", err.Error())
+		log.Printf("[ERROR ProfileData() profile.go]: %v\n", err.Error())
 		return student, err
 	}
 	err = c.Visit(profile_url)
@@ -173,12 +171,6 @@ func ProfileData(c *colly.Collector, studentId string, school string) (models.St
 	}
 	c.OnResponse(func(r *colly.Response) {})
 
-	// fmt.Println(student.ScheduleLink)
-	// fmt.Println(student.ImgURL)
-	// fmt.Println(student.Image64)
-	// fmt.Println(student.ID)
-	// fmt.Println(student.Grade)
-	// fmt.Println(student.StateID)
 	return student, nil
 }
 
@@ -187,8 +179,11 @@ func StudentIds(c *colly.Collector, school string) ([]string, error) {
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		students := h.DOM.Find("div > div.selectStudent > div > ul > li.selectStudentItem")
+		//fmt.Println(h.DOM.Html())
+		fmt.Println(students.Length())
 		//fmt.Println(students.Length())
 		students.Each(func(i int, s *goquery.Selection) {
+			fmt.Println(s.Html())
 			val, _ := s.Find("a").Attr("onclick")
 			//fmt.Println(val)
 			studentId := strings.Split(val, "'")
@@ -202,12 +197,12 @@ func StudentIds(c *colly.Collector, school string) ([]string, error) {
 
 	profile_url, err := utils.FormatUrl("profile", school)
 	if err != nil {
-		fmt.Printf("[ERROR StudentIds() profile.go]: %v\n", err.Error())
+		log.Printf("[ERROR StudentIds() profile.go]: %v\n", err.Error())
 		return info, err
 	}
 	err = c.Visit(profile_url)
 	if err != nil {
-		fmt.Println("[ERROR StudentIds() profile.go]: Couldn't visit profile url")
+		log.Println("[ERROR StudentIds() profile.go]: Couldn't visit profile url")
 	}
 	c.OnHTMLDetach("body")
 
@@ -251,12 +246,12 @@ func WhatGradeIsStudent(c *colly.Collector, school string, studentIds []string) 
 		data["studentid"] = id
 		profile_url, err := utils.FormatDynamicUrl(data, school)
 		if err != nil {
-			fmt.Printf("[ERROR WhatGradeIsStudent() profile.go]: %v\n", err.Error())
+			log.Printf("[ERROR WhatGradeIsStudent() profile.go]: %v\n", err.Error())
 			return grades, err
 		}
 		err = c.Visit(profile_url)
 		if err != nil {
-			fmt.Println("[ERROR WhatGradeIsStudent() profile.go]: Couldn't visit profile url")
+			log.Println("[ERROR WhatGradeIsStudent() profile.go]: Couldn't visit profile url")
 		}
 	}
 
