@@ -180,8 +180,7 @@ func StudentIds(c *colly.Collector, school string) ([]string, error) {
 	c.OnHTML("body", func(h *colly.HTMLElement) {
 		students := h.DOM.Find("div > div.selectStudent > div > ul > li.selectStudentItem")
 		//fmt.Println(h.DOM.Html())
-		log.Print(students.Length())
-		log.Println(" <- ID's length")
+		log.Println("There are " + string(rune(students.Length())) + " IDs found for this account.")
 		//fmt.Println(students.Length())
 		students.Each(func(i int, s *goquery.Selection) {
 			//fmt.Println(s.Html())
