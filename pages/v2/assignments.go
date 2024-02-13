@@ -101,10 +101,13 @@ func AssignmentsDataForACourse(c *colly.Collector, studentId string, mpToView st
 	data["studentid"] = studentId
 	data["dateRange"] = mpToView
 	//FIXME: 10/3/2023 I JUST DISCOVERED BIGGEST ERROR - I AM NOT COPYING ANOTHER DICT IN MEMORY IM ACTUALLY JUST USING THE DICT ITSELF AND CHANGING VALUES BIG ERROR
-	data["courseAndSection"] = fmt.Sprintf("%v:%v", courseCode, courseSection)
+	if strings.Contains(courseSection, ":") {
+		data["courseAndSection"] = courseSection
+	} else {
+		data["courseAndSection"] = fmt.Sprintf("%v:%v", courseCode, courseSection)
+	}
 	data["status"] = ""
 	assignemnts_url, err := utils.FormatDynamicUrl(data, school)
-	//fmt.Printf("assignemnts_url: %v\n", assignemnts_url)
 
 	if err != nil {
 		log.Println(err)
