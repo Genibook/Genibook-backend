@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	api "webscrapper/apis/v2"
 
 	"github.com/gin-gonic/gin"
@@ -48,10 +47,5 @@ func main() {
 	r.POST("/api/ids/", api.MakeHandler(api.StudentIDHandlerV2))
 	r.GET("/api/transcript/", api.MakeHandler(api.TranscriptHandlerV2))
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "6969"
-	}
-
-	log.Fatal(r.Run(":" + port))
+	log.Fatal(r.Run(""))
 }
