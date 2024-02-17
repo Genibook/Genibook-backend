@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 
 	//r := gin.New()
 	// r.Use(gin.Recovery())
