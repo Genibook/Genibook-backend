@@ -13,6 +13,7 @@ import (
 func Init_colly() *colly.Collector {
 
 	c := colly.NewCollector()
+	c.IgnoreRobotsTxt = true
 	c.OnRequest(func(r *colly.Request) {
 		r.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
 		r.Headers.Add("User-Agent", browser.Random())
