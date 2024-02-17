@@ -1,8 +1,6 @@
 module webscrapper
 
-go 1.21
-
-toolchain go1.22.0
+go 1.20
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
