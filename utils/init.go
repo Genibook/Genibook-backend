@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"os"
 	constants "webscrapper/constants/v1"
@@ -17,7 +18,8 @@ func Init_colly() *colly.Collector {
 	c.OnRequest(func(r *colly.Request) {
 		r.Headers.Set("Content-Type", "application/x-www-form-urlencoded")
 	})
-	log.Println("Connection Established With Backend")
+	log.Print("Connection Established With Backend, with user-agent: ")
+	fmt.Println(c.UserAgent)
 	return c
 }
 
