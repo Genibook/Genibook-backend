@@ -13,9 +13,9 @@ import (
 func Init_colly() *colly.Collector {
 
 	c := colly.NewCollector()
-	c.UserAgent = browser.Random()
 	c.OnRequest(func(r *colly.Request) {
-		r.Headers.Set("Content-Type", "application/x-www-form-urlencoded")
+		r.Headers.Add("Content-Type", "application/x-www-form-urlencoded")
+		r.Headers.Add("User-Agent", browser.Random())
 	})
 	//log.Print("Connection Established With Backend, with user-agent: ")
 	return c
