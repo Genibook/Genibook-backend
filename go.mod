@@ -12,6 +12,8 @@ require (
 	golang.org/x/net v0.21.0
 )
 
+require github.com/EDDYCJY/fake-useragent v0.2.0 // indirect
+
 require (
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect

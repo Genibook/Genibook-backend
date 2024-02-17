@@ -5,6 +5,7 @@ import (
 	"os"
 	constants "webscrapper/constants/v1"
 
+	browser "github.com/EDDYCJY/fake-useragent"
 	"github.com/gocolly/colly"
 	"github.com/joho/godotenv"
 )
@@ -12,7 +13,10 @@ import (
 func Init_colly() *colly.Collector {
 
 	c := colly.NewCollector()
-	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
+	c.UserAgent = browser.Random()
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Content-Type", "application/x-www-form-urlencoded")
+	})
 	log.Println("Connection Established With Backend")
 	return c
 }
