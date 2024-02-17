@@ -178,6 +178,7 @@ func StudentIds(c *colly.Collector, school string) ([]string, error) {
 	info := make([]string, 0)
 
 	c.OnHTML("body", func(h *colly.HTMLElement) {
+		fmt.Println(h.DOM.Html())
 		students := h.DOM.Find("div > div.selectStudent > div > ul > li.selectStudentItem")
 		//fmt.Println(h.DOM.Html())
 		log.Println("There are " + fmt.Sprintf("%v", students.Length()) + " IDs found for this account.")
